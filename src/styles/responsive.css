@@ -1,0 +1,222 @@
+/* ============================================
+   Responsive
+   ============================================ */
+
+/* Tablet landscape & small desktop */
+@media (max-width: 1100px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .kabbalistic-grid,
+  .interpretation-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Tablet portrait */
+@media (max-width: 768px) {
+  .glass-container {
+    padding: 0 16px;
+  }
+
+  .hero {
+    padding: 60px 16px 40px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+  }
+
+  .content-grid {
+    gap: 20px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .number-card {
+    padding: 20px 16px;
+  }
+
+  .number-value {
+    font-size: 3rem;
+    min-height: 3rem;
+  }
+
+  .kabbalistic-grid,
+  .interpretation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 40px 0 24px;
+  }
+
+  .tabs {
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+
+  .detail-section {
+    padding: 20px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .astrology-header {
+    padding: 20px;
+  }
+
+  .astrology-body {
+    padding: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .hero {
+    padding: 40px 12px 32px;
+  }
+
+  .hero-badge {
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .content-grid {
+    gap: 16px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .number-card {
+    padding: 16px 12px;
+  }
+
+  .number-title {
+    font-size: 0.75rem;
+  }
+
+  .number-value {
+    font-size: 2.2rem;
+    min-height: 2.2rem;
+  }
+
+  .number-desc {
+    display: none;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
+  .card-header {
+    padding: 20px 16px 0;
+  }
+
+  .detail-section {
+    padding: 16px;
+    margin-top: 24px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 32px 0 20px;
+  }
+
+  .footer-bottom {
+    padding: 20px 0;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .kabbalistic-card,
+  .interpretation-card {
+    padding: 18px;
+  }
+
+  .planetary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn-premium {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .astrology-sign-name {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 360px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .planetary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html { scroll-behavior: auto; }
+  .number-card:hover { transform: none; }
+  .kabbalistic-card:hover { transform: none; }
+  .interpretation-card:hover { transform: none; }
+}

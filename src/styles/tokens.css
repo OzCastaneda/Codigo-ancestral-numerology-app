@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --color-deep-950: #050814;
+  --color-deep-900: #070B1A;
+  --color-deep-800: #0B1020;
+  --color-deep-700: #111827;
+  --color-deep-600: #1E293B;
+
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-surface-active: rgba(255, 255, 255, 0.12);
+
+  --color-primary: #8B5CF6;
+  --color-primary-dark: #7C3AED;
+  --color-primary-light: #A78BFA;
+
+  --color-secondary: #06B6D4;
+  --color-secondary-dark: #0891B2;
+  --color-secondary-light: #22D3EE;
+
+  --color-accent: #F59E0B;
+  --color-accent-dark: #D97706;
+  --color-accent-light: #FBBF24;
+
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-card: rgba(255, 255, 255, 0.1);
+  --color-border-focus: rgba(139, 92, 246, 0.5);
+
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+}
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --glass-blur: blur(20px);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.15s var(--ease);
+  --transition: 0.3s var(--ease);
+  --transition-slow: 0.5s var(--ease);
+}
