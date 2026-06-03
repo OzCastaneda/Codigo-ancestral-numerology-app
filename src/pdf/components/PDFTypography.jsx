@@ -2,7 +2,7 @@ import { Text, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   h1: {
-    fontFamily: 'Playfair Display',
+    fontFamily: 'Times-Roman',
     fontSize: 24,
     fontWeight: 800,
     color: '#F1F5F9',
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.2,
   },
   h2: {
-    fontFamily: 'Playfair Display',
+    fontFamily: 'Times-Roman',
     fontSize: 18,
     fontWeight: 700,
     color: '#E2E8F0',
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.3,
   },
   h3: {
-    fontFamily: 'Playfair Display',
+    fontFamily: 'Times-Roman',
     fontSize: 13,
     fontWeight: 700,
     color: '#C4B5FD',
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   h4: {
-    fontFamily: 'Playfair Display',
+    fontFamily: 'Times-Roman',
     fontSize: 11,
     fontWeight: 700,
     color: '#94A3B8',
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   body: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 10,
     fontWeight: 400,
     color: '#94A3B8',
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   bodySmall: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 9,
     fontWeight: 400,
     color: '#64748B',
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   label: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 8,
     fontWeight: 500,
     color: '#64748B',

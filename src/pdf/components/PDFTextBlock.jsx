@@ -2,7 +2,7 @@ import { Text, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   block: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 9.5,
     fontWeight: 400,
     color: '#94A3B8',
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 10,
     fontWeight: 700,
     lineHeight: 1.5,

@@ -1,28 +1,9 @@
-import { Font } from '@react-pdf/renderer';
+// Las fuentes nativas de PDF nunca requieren carga externa
+// Helvetica y Times-Roman vienen integradas en todos los PDFs
+// Esto elimina completamente los errores de 404 de Google Fonts
 
 export function registerFonts() {
-  Font.register({
-    family: 'Lato',
-    src: 'https://fonts.gstatic.com/s/lato/v25/S6uyw4BMUTPHvxk.ttf',
-    fontWeight: 400,
-  });
-
-  Font.register({
-    family: 'Lato',
-    src: 'https://fonts.gstatic.com/s/lato/v25/S6u9w4BMUTPHh6UVew8.ttf',
-    fontWeight: 700,
-  });
-
-  Font.register({
-    family: 'Playfair Display',
-    src: 'https://fonts.gstatic.com/s/playfairdisplay/v40/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvUDQ.ttf',
-    fontWeight: 400,
-  });
-
-  Font.register({
-    family: 'Playfair Display',
-    src: 'https://fonts.gstatic.com/s/playfairdisplay/v40/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKeiukDQ.ttf',
-    fontWeight: 700,
-  });
+  // No necesitamos registrar fuentes. Las fuentes nativas están siempre disponibles.
+  // Esta función se mantiene por compatibilidad.
 }
 

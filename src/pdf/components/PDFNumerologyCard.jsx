@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 10,
     fontWeight: 700,
     color: '#A78BFA',
@@ -25,14 +25,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   value: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 20,
     fontWeight: 800,
     color: '#F59E0B',
     lineHeight: 1.2,
   },
   description: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 9,
     fontWeight: 400,
     color: '#94A3B8',
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   meaning: {
-    fontFamily: 'Lato',
+    fontFamily: 'Helvetica',
     fontSize: 9,
     fontWeight: 400,
     color: '#64748B',

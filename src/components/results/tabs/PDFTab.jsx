@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Download, Loader2, CheckCircle, Eye, Sparkles, FileDown } from 'lucide-react';
+import { FileText, Download, Loader2, CheckCircle, Eye, Sparkles, FileDown, AlertCircle } from 'lucide-react';
 import { pdf } from '@react-pdf/renderer';
 import NumerologyReport from '../../../pdf/NumerologyReport';
 import { getReportFileName } from '../../../pdf/utils/helpers';
@@ -8,11 +8,13 @@ import { getReportFileName } from '../../../pdf/utils/helpers';
 export default function PDFTab({ profile, fullName, birthdate }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleDownload = async () => {
     if (loading) return;
     setLoading(true);
     setSuccess(false);
+    setError(null);
     try {
       const blob = await pdf(
         <NumerologyReport profile={profile} fullName={fullName} birthdate={birthdate} />
@@ -29,6 +31,8 @@ export default function PDFTab({ profile, fullName, birthdate }) {
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error('PDF generation error:', err);
+      setError('No se pudo generar el PDF. Por favor, intenta de nuevo más tarde.');
+      setTimeout(() => setError(null), 5000);
     } finally {
       setLoading(false);
     }
@@ -51,6 +55,28 @@ export default function PDFTab({ profile, fullName, birthdate }) {
         gap: 24,
         marginTop: 8,
       }}>
+        {error && (
+          <motion.div
+            className="glass-card"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              gridColumn: '1 / -1',
+              borderLeft: '4px solid #EF4444',
+              background: 'rgba(239,68,68,0.08)',
+            }}
+          >
+            <div className="card-body" style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '16px' }}>
+              <AlertCircle size={20} style={{ color: '#EF4444', flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <h4 style={{ color: '#EF4444', marginBottom: 4, fontWeight: 600 }}>Error al generar PDF</h4>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', margin: 0 }}>
+                  {error}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
         <motion.div
           className="glass-card"
           initial={{ opacity: 0, y: 16 }}
