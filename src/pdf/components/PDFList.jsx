@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     fontSize: 9,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontWeight: 400,
     color: '#94A3B8',
     lineHeight: 1.7,

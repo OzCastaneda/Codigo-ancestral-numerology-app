@@ -2,41 +2,45 @@
 
 ## Visión General
 
-Aplicación SPA de Numerología Cabalística construida con **React 18**, **Vite 5** y una arquitectura basada en **features**. Combina cálculos numerológicos pitagóricos con la tradición cabalística (22 letras hebreas, Árbol de la Vida, Sephiroth). Incluye reportes PDF, gráficas Recharts y sistema de contacto con EmailJS.
+Aplicación SPA de Numerología Cabalística construida con **React 18**, **Vite 5** y una arquitectura basada en **features**. Combina cálculos numerológicos pitagóricos con la tradición cabalística (22 letras hebreas, Árbol de la Vida, Sephiroth). Incluye autenticación **Supabase**, reportes PDF, gráficas Recharts y sistema de contacto con EmailJS.
 
 ## Principios Arquitectónicos
 
 - **Feature-based**: La lógica de numerología está aislada en `features/numerology/`
 - **Separación de responsabilidades**: Engine (cálculos puros) ≠ Data (estática) ≠ Components (UI) ≠ Service (agregación)
-- **Estado global centralizado**: Zustand store único
+- **Estado global centralizado**: Zustand store único para numerology; AuthContext para sesión
 - **Inmutabilidad**: Todos los datos estáticos usan `Object.freeze()`
 - **Lazy loading**: Páginas pesadas cargadas bajo demanda; cada tab de resultados también es lazy
-- **Sin backend**: Toda la lógica es client-side; PDF se genera con `@react-pdf/renderer`, formularios con EmailJS
+- **Autenticación**: Supabase Auth con `onAuthStateChange`, sesión persistente, ProtectedRoute
+- **Responsive mobile-first**: TailwindCSS utilities (sm/md/lg/xl/2xl), sin media queries hardcodeadas
+- **Sin backend propio**: Auth y DB via Supabase; PDF client-side; formularios con EmailJS
 
 ## Diagrama de Capas
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         Páginas (pages/)                            │
-│  HomePage / ResultsPage / AboutPage / ContactPage / NotFoundPage    │
-└──────────────┬──────────────────────────┬──────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                           Páginas (pages/)                               │
+│  Home / Results / About / Contact / Login / Register / Dashboard / 404   │
+└──────────────┬──────────────────────────┬───────────────────────────────┘
                │                          │
      ┌─────────▼──────────┐    ┌──────────▼──────────┐
      │  Componentes UI     │    │  Feature Comps       │
      │  (layout/forms/     │    │  (numerology/        │
-     │   cards/charts/     │    │   components/)       │
-     │   contact/results/  │    │                      │
-     │   kabbalah/pdf/)    │    │                      │
+     │   charts/results/   │    │   components/)       │
+     │   contact/kabbalah/ │    │                      │
+     │   pdf/)             │    │                      │
      └─────────┬──────────┘    └──────────┬──────────┘
                │                          │
      ┌─────────▼──────────────────────────▼──────────┐
      │              Zustand Store (store/)            │
      │          useNumerologyStore                   │
-     └─────────┬──────────────────────────┬──────────┘
+     └───────────────────────────────────────────────┘
                │                          │
      ┌─────────▼──────────┐    ┌──────────▼──────────┐
      │  Service Layer      │    │    Engine            │
      │  (numerologyService)│    │   (pure fns)         │
+     │  (authService)      │    │                      │
+     │  (reportService)    │    │                      │
      └─────────┬──────────┘    └──────────┬──────────┘
                │                          │
      ┌─────────▼──────────────────────────▼──────────┐
@@ -44,131 +48,91 @@ Aplicación SPA de Numerología Cabalística construida con **React 18**, **Vite
      │   numerologyData.js /                         │
      │   numerologyInterpretations.js                │
      └───────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                     Supabase (external)                                  │
+│  Auth: signUp / signIn / signOut / onAuthStateChange                    │
+│  DB:  numerology_reports (user_id, full_name, numbers, created_at)      │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Flujo de Datos (Cálculo Numerológico)
+## Flujo de Autenticación
 
 ```
-InputForm (nombre + fecha)
-       │
-       ▼
-useNumerologyStore.calculate()
-       │
-       ▼
-calculateAll(fullName, birthdate)  ← engine puro
-       │
-       ▼
-results = { name, destiny, soul, personality, mission }
-       │
-       ▼
-navega a /results
-       │
-       ▼
-ResultsPage → computeFullProfile()
-       │
-       ├── calculateAll() → resultados base
-       ├── getInterpretations(num, categoria) → significado + fortalezas + etc.
-       ├── getLetter(num) → letra hebrea + esotérico
-       ├── getSephirah(num) → sephirah del Árbol de la Vida
-       └── getZodiacSignIndex(date) → signo zodiacal hebreo
-       │
-       ▼
-profile = { results, interpretations, kabbalistic, zodiac }
-       │
-       ▼
-ResultsTabs (6 tabs con lazy loading c/u)
-  ├── ResumenTab         → grid + energía dominante + insights
-  ├── InterpretacionesTab → accordion con expand/contract
-  ├── GraficasTab        → radar + donut + timeline
-  ├── ArbolTab           → TreeOfLife + KabbalisticSection
-  ├── EnergiasTab        → planetas + arquetipos + colores + astrología
-  └── PDFTab             → descarga PDF
+AppProviders
+  └── AuthProvider (context/AuthContext.jsx)
+        ├── Escucha supabase.auth.onAuthStateChange()
+        ├── user / session / loading state
+        ├── login(email, password)
+        ├── register(email, password, fullName)
+        └── logout()
+
+ProtectedRoute
+  ├── loading → spinner
+  ├── !user  → redirect /login
+  └── user   → render children
+
+Header
+  ├── loading → no muestra link de auth
+  ├── user    → muestra "Dashboard"
+  └── !user   → muestra "Ingresar"
+```
+
+## Flujo de Guardado de Reportes
+
+```
+InputForm.handleSubmit()
+  ├── store.calculate() → results
+  ├── if (user) → createReport({ user_id, full_name, birth_date, ...numbers })
+  └── navigate('/results')
+
+DashboardPage
+  └── useEffect → getUserReports(user.id) → setReports(data)
 ```
 
 ## Árbol de Componentes
 
 ```
 <BrowserRouter>
-  <Layout>
-    ├── <Header />          — Hero + nav (Inicio, Sobre, Contacto)
-    ├── <Routes>
-    │   ├── / → <HomePage>
-    │   │   ├── Hero image (máscara radial + starfield)
-    │   │   ├── Descripción + Beneficios list
-    │   │   └── <InputForm />
-    │   ├── /results → <ResultsPage> (lazy)
-    │   │   └── <ResultsTabs>
-    │   │       ├── <ResumenTab />
-    │   │       │   ├── <ResultsGrid>
-    │   │       │   │   └── <NumberCard /> × 4
-    │   │       │   ├── DominantEnergy
-    │   │       │   └── QuickInsights
-    │   │       ├── <InterpretacionesTab />
-    │   │       │   └── AccordionItem × 4
-    │   │       ├── <GraficasTab />
-    │   │       │   ├── <EnergyRadarChart />
-    │   │       │   ├── <NumberDonutChart />
-    │   │       │   └── <SpiritualTimeline />
-    │   │       ├── <ArbolTab />
-    │   │       │   ├── <TreeOfLife />
-    │   │       │   └── <KabbalisticSection />
-    │   │       ├── <EnergiasTab />
-    │   │       │   ├── Planetas + Arquetipos + Colores
-    │   │       │   └── <AstrologyProfile />
-    │   │       └── <PDFTab />
-    │   │           └── <PDFDownloadButton />
-    │   ├── /about → <AboutPage> (lazy)
-    │   ├── /contact → <ContactPage> (lazy)
-    │   │   └── <ContactSection>
-    │   │       ├── <ContactButtons />   — WhatsApp + Email
-    │   │       ├── <ConsultationCards /> — 5 servicios
-    │   │       └── <ContactForm />       — EmailJS + mailto
-    │   └── * → <NotFoundPage> (lazy)
-    ├── <AppFooter />       — 3 columnas con enlaces funcionales
-    └── <Toast />           — notificaciones animadas
-  </Layout>
+  <AppProviders>
+    <Layout>
+      ├── <Header />          — Hero + nav responsiva (hamburger mobile)
+      ├── <Routes>
+      │   ├── / → <HomePage>  (grid 1/2/3 cols responsive)
+      │   ├── /results → <ResultsPage> (lazy)
+      │   │   └── <ResultsTabs> (icon-only mobile, full desktop)
+      │   │       ├── <ResumenTab /> ...
+      │   │       ├── <InterpretacionesTab /> ...
+      │   │       ├── <GraficasTab /> ...
+      │   │       ├── <ArbolTab /> ...
+      │   │       ├── <EnergiasTab /> ...
+      │   │       └── <PDFTab /> ...
+      │   ├── /login → <LoginPage> (lazy)
+      │   │   └── <LoginForm /> (React Hook Form + Zod)
+      │   ├── /register → <RegisterPage> (lazy)
+      │   │   └── <RegisterForm /> (React Hook Form + Zod)
+      │   ├── /dashboard → <ProtectedRoute> → <DashboardPage> (lazy)
+      │   ├── /about → <AboutPage> (lazy)
+      │   ├── /contact → <ContactPage> (lazy)
+      │   │   └── <ContactSection>
+      │   │       ├── <ContactButtons />
+      │   │       ├── <ConsultationCards />
+      │   │       └── <ContactForm />
+      │   └── * → <NotFoundPage> (lazy)
+      ├── <AppFooter />       — Grid responsive 1/2/3 cols
+      └── <Toast />           — notificaciones animadas
+    </Layout>
+  </AppProviders>
 </BrowserRouter>
 ```
 
-## Capa PDF
+## Distribución Responsive
 
-```
-src/pdf/
-├── NumerologyReport.jsx        → Documento PDF completo (4+ páginas)
-├── PDFDownloadButton.jsx       → Botón con pdf().toBlob()
-├── components/
-│   ├── PDFCover.jsx            → Portada oscura A4
-│   ├── PDFSection.jsx          → Sección con icono + divider
-│   ├── PDFSectionTitle.jsx     → Título 22px + subtítulo
-│   ├── PDFCard.jsx             → Card con variantes (gold/green/red)
-│   ├── PDFNumerologyCard.jsx   → Card de resultado numerológico
-│   ├── PDFInterpretationCard.jsx → Card de interpretación con listas
-│   ├── PDFBulletList.jsx       → Lista con bullets coloreados
-│   ├── PDFTextBlock.jsx        → Párrafo con variantes
-│   ├── PDFPageWrapper.jsx      → Página A4 estándar con footer
-│   └── PDFFooter.jsx           → Footer con branding + número
-└── utils/
-    ├── helpers.js              → formatDate, meanings, fileName
-    └── fonts.js                → registerFonts()
-```
-
-Distribución de páginas:
-- **Página 1**: Portada
-- **Página 2**: Resultados (4 cards)
-- **Página 3**: Interpretaciones 1-2 (Destino + Alma)
-- **Página 4**: Interpretaciones 3-4 (Personalidad + Misión)
-- **Página 5+**: Correspondencias cabalísticas + Astrología
-
-## Sistema de Contacto
-
-```
-src/components/contact/
-├── ContactSection.jsx      → Layout 2-column (buttons left, form right)
-├── ContactButtons.jsx      → WhatsApp (wa.me) + Email (mailto: directo)
-├── ContactForm.jsx         → 6 campos + EmailJS (fallback mailto:)
-└── ConsultationCards.jsx   → 5 cards de servicios con hover
-```
-
-- WhatsApp: `https://wa.me/573228352645?text=...`
-- Email: `mailto:angelusignis777@gmail.com?subject=...&body=...`
-- Formulario: EmailJS si `VITE_EMAILJS_*` configurado, fallback a `mailto:`
+| Componente     | Mobile (<768px)          | Tablet (md)        | Desktop (xl)      |
+| -------------- | ------------------------ | ------------------ | ----------------- |
+| Header         | Hamburger + dropdown     | Nav horizontal     | Nav horizontal    |
+| HomePage       | 1 columna                | 2 cols             | 3 cols            |
+| Footer         | 1 columna                | 2 columnas         | 3 columnas        |
+| ResultsTabs    | Iconos + scroll X        | Iconos + labels    | Iconos + labels   |
+| ContactSection | 1 columna                | 1 columna          | 2 columnas        |
+| Auth pages     | Padding reducido, 48px   | Padding normal     | Padding completo  |

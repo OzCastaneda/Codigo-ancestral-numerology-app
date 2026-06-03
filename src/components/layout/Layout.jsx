@@ -9,7 +9,7 @@ export default function Layout({ children }) {
       <div className="orb orb-2" aria-hidden="true" />
       <div className="orb orb-3" aria-hidden="true" />
       <Header />
-      <main className="glass-container">{children}</main>
+      <main className="glass-container px-4 sm:px-6 md:px-8 lg:px-10">{children}</main>
       <AppFooter />
       <Toast />
     </div>

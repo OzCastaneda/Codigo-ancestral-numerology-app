@@ -55,20 +55,20 @@ export default function ResultsTabs({ profile, fullName, birthdate }) {
   return (
     <div className="results-tabs">
       <nav className="results-tabs-nav" role="tablist">
-        <div className="results-tabs-list">
+        <div className="results-tabs-list flex-nowrap overflow-x-auto gap-1 px-2 py-2 md:gap-2 md:px-0 md:py-0 md:flex-wrap md:overflow-visible">
           {TABS.map((tab) => {
             const TabIcon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
-                className={`results-tab-btn ${isActive ? 'active' : ''}`}
+                className={`results-tab-btn flex-shrink-0 min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 ${isActive ? 'active' : ''}`}
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => handleTabChange(tab.id)}
               >
-                <TabIcon size={16} />
-                <span>{tab.label}</span>
+                <TabIcon size={18} />
+                <span className="hidden sm:inline">{tab.label}</span>
                 {isActive && (
                   <motion.div
                     className="results-tab-glow"

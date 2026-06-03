@@ -6,9 +6,11 @@
 src/styles/
 ├── tokens.css        → TailwindCSS + variables CSS (colores, fuentes, radius)
 ├── global.css        → Reset, body, animaciones @keyframes, scrollbar, print
-├── components.css    → Todos los estilos de componentes (~1950 líneas)
-└── responsive.css    → Media queries (breakpoints 1100px, 900px, 768px, 480px)
+├── components.css    → Todos los estilos de componentes (~2300 líneas)
+└── responsive.css    → Media queries mínimas (prefers-reduced-motion)
 ```
+
+La mayoría del diseño responsive se maneja con **TailwindCSS utilities** directamente en los componentes JSX, eliminando la necesidad de media queries hardcodeadas.
 
 ## TailwindCSS v4
 
@@ -42,6 +44,41 @@ Se usa `@tailwindcss/vite` plugin. La configuración del tema se define en CSS m
 | `--color-text-secondary` | #94A3B8 | Texto secundario              |
 | `--color-text-muted`     | #64748B | Texto sutil / placeholders    |
 
+## Responsive con Tailwind
+
+Breakpoints estándar de Tailwind, enfoque mobile-first:
+
+| Breakpoint | Clase     | Destino          |
+| ---------- | --------- | ---------------- |
+| 0px        | (base)    | Móvil vertical   |
+| 640px      | `sm:`     | Móvil horizontal |
+| 768px      | `md:`     | Tablet vertical  |
+| 1024px     | `lg:`     | Tablet horizontal / desktop pequeño |
+| 1280px     | `xl:`     | Desktop          |
+| 1536px     | `2xl:`    | Desktop grande   |
+
+### Ejemplos de uso
+
+```jsx
+// Grid que cambia de 1 → 2 → 3 columnas
+<section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+// Imagen visible solo en desktop
+<div className="hidden xl:block">
+
+// Tabs: iconos siempre visibles, labels solo desde sm
+<button>
+  <Icon size={18} />
+  <span className="hidden sm:inline">Label</span>
+</button>
+
+// Touch targets 44px en mobile, 44px en desktop
+<input className="min-h-[48px] sm:min-h-[44px] text-base" />
+
+// Footer: 1 → 2 → 3 columnas
+<footer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+```
+
 ## Glassmorphism
 
 Patrón recurrente en todos los cards:
@@ -61,6 +98,7 @@ Patrón recurrente en todos los cards:
 - **Display (títulos)**: `Outfit` — pesos 600, 700, 800
 - **Body (texto)**: `Inter` — pesos 300, 400, 500
 - **Números**: `Outfit` 800 con gradiente
+- **Mínimo 16px** en mobile para legibilidad
 
 ## Animaciones
 
@@ -74,6 +112,7 @@ Patrón recurrente en todos los cards:
 | `pulseGlow`   | 6-8s     | ease-in-out | Fondo del hero             |
 | `shimmer`     | 1.5s     | linear     | Loading skeleton           |
 | `twinkle`     | 3-5s     | ease-in-out | Starfield en hero image    |
+| `auth-spin`   | 0.6s     | linear     | Spinner de carga en auth   |
 
 Todas las animaciones se desactivan con `prefers-reduced-motion: reduce`.
 
@@ -82,30 +121,34 @@ Todas las animaciones se desactivan con `prefers-reduced-motion: reduce`.
 La imagen principal usa un `::before` con máscara radial para difuminar los bordes:
 
 ```css
-.home-hero-image::before {
+.home-grid-image::before {
   mask-image: radial-gradient(ellipse 80% 90% at 50% 45%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 60px rgba(139, 92, 246, 0.3));
 }
 ```
 
-Un `::after` aplica un overlay de fusión con el fondo oscuro, y `.home-hero-starfield` genera estrellas parpadeantes mediante `radial-gradient` multi-capa animado.
+Un `::after` aplica un overlay de fusión con el fondo oscuro, y `.home-grid-starfield` genera estrellas parpadeantes mediante `radial-gradient` multi-capa animado.
+
+## Componentes de Autenticación
+
+Los formularios de login/register usan un sistema de estilos dedicado:
+
+```css
+.auth-card        → glassmorphism + padding responsive (p-6 sm:p-8 md:p-10)
+.auth-input       → min-h-[48px] mobile / min-h-[44px] desktop, text-base
+.auth-submit-btn  → gradiente púrpura, hover elevate
+.auth-error-banner → banner rojo translúcido con icono AlertCircle
+.auth-spinner     → animación circular para estado de carga
+```
 
 ## Secciones principales del layout
 
-| Sección                     | Clase CSS            | Layout                          |
-| --------------------------- | -------------------- | ------------------------------- |
-| Hero portada                | `.home-hero`         | flex row 50/50 (image + content) |
-| Tabs de resultados          | `.results-tabs`      | flex sticky nav + content       |
-| Grid de contacto            | `.contact-grid`      | 2-column grid                   |
-| Árbol de la Vida            | `.tree-layout`       | 2-column grid                   |
-| Gráficas                    | `.charts-grid`       | 2-column grid                   |
-
-## Responsive
-
-| Breakpoint | Destino            | Cambios clave                              |
-| ---------- | ------------------ | ------------------------------------------ |
-| 1100px     | Tablet landscape   | Hero → column, image 300px top banner      |
-| 900px      | Tablet             | Contact grid → 1 col, tree → 1 col         |
-| 768px      | Tablet portrait    | Tabs icons only, 2 col results             |
-| 480px      | Mobile             | Image 220px, padding reducido              |
+| Sección               | Layout responsive                         |
+| --------------------- | ----------------------------------------- |
+| Home hero             | grid 1 col → md 2 cols → xl 3 cols       |
+| Tabs de resultados    | flex scroll horizontal mobile, wrap desktop |
+| Grid de contacto      | grid 1 col → lg 2 cols                   |
+| Footer                | grid 1 col → sm 2 cols → lg 3 cols       |
+| Auth pages            | card centrado, max-w-[440px], padding adaptable |
+| Dashboard             | max-w-720px centrado, header flexible     |

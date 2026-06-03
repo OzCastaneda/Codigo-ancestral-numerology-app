@@ -5,7 +5,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   title: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Playfair Display',
     fontSize: 22,
     fontWeight: 800,
     color: '#F1F5F9',
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   subtitle: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 10,
     fontWeight: 400,
     color: '#64748B',

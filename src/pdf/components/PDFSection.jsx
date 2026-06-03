@@ -17,14 +17,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Playfair Display',
     fontSize: 18,
     fontWeight: 700,
     color: '#F1F5F9',
     lineHeight: 1.3,
   },
   subtitle: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 9,
     fontWeight: 400,
     color: '#64748B',

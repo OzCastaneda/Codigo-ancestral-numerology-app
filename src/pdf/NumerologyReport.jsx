@@ -31,14 +31,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   interpTitle: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Playfair Display',
     fontSize: 13,
     fontWeight: 700,
     color: '#C4B5FD',
     lineHeight: 1.5,
   },
   interpBody: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 9,
     fontWeight: 400,
     color: '#94A3B8',
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   interpTag: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 8,
     fontWeight: 500,
     color: '#A78BFA',
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   hebrewLetter: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 20,
     color: '#F59E0B',
     lineHeight: 1,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   astrologyLabel: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 8,
     fontWeight: 500,
     color: '#64748B',
@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   astrologyValue: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 10,
     fontWeight: 700,
     color: '#F59E0B',
   },
   traitText: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 9,
     fontWeight: 400,
     lineHeight: 1.5,
@@ -212,16 +212,16 @@ function AstrologyBlock({ zodiac }) {
         </View>
         <View style={styles.astrologyRow}>
           <Text style={styles.astrologyLabel}>Mes Hebreo</Text>
-          <Text style={{ fontFamily: 'Helvetica', fontSize: 10, fontWeight: 600, color: '#94A3B8' }}>{zodiac.sign.hebrewMonth}</Text>
+          <Text style={{ fontFamily: 'Lato', fontSize: 10, fontWeight: 600, color: '#94A3B8' }}>{zodiac.sign.hebrewMonth}</Text>
         </View>
         <View style={styles.astrologyRow}>
           <Text style={styles.astrologyLabel}>Planeta</Text>
-          <Text style={{ fontFamily: 'Helvetica', fontSize: 10, fontWeight: 600, color: '#A78BFA' }}>{zodiac.sign.planet}</Text>
+          <Text style={{ fontFamily: 'Lato', fontSize: 10, fontWeight: 600, color: '#A78BFA' }}>{zodiac.sign.planet}</Text>
         </View>
         {zodiac.sign.tikkun && (
           <>
             <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.04)', marginVertical: 10 }} />
-            <Text style={{ fontFamily: 'Helvetica', fontSize: 9, fontWeight: 700, color: '#F59E0B', marginBottom: 4, lineHeight: 1.4 }}>
+            <Text style={{ fontFamily: 'Lato', fontSize: 9, fontWeight: 700, color: '#F59E0B', marginBottom: 4, lineHeight: 1.4 }}>
               Tikkun (Corrección)
             </Text>
             <Text style={styles.interpBody}>{zodiac.sign.tikkun}</Text>

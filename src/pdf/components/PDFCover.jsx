@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     textTransform: 'uppercase',
     marginBottom: 24,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontWeight: 500,
     padding: '6 18',
     borderColor: 'rgba(167, 139, 250, 0.3)',
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 48,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Playfair Display',
     fontWeight: 800,
     color: '#F1F5F9',
     textAlign: 'center',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontWeight: 300,
     color: '#94A3B8',
     textAlign: 'center',
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 10,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontWeight: 500,
     color: '#64748B',
     textTransform: 'uppercase',
@@ -72,14 +72,14 @@ const styles = StyleSheet.create({
   },
   infoValue: {
     fontSize: 18,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontWeight: 600,
     color: '#E2E8F0',
     textAlign: 'center',
   },
   infoDate: {
     fontSize: 11,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     color: '#64748B',
     marginTop: 4,
   },
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     bottom: 40,
     fontSize: 9,
     color: '#475569',
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     textAlign: 'center',
   },
 });
@@ -120,7 +120,7 @@ export default function PDFCover({ fullName, birthdate, generatedDate }) {
         </View>
       </View>
 
-      <Text style={styles.footer}>Generado el {generatedDate} — Código Ancestral © 2025</Text>
+      <Text style={styles.footer}>Generado el {generatedDate} — Aethra © 2025</Text>
     </Page>
   );
 }

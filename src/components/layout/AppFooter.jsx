@@ -7,9 +7,9 @@ const EMAIL_URL = 'mailto:angelusignis777@gmail.com?subject=Consulta%20Numerol%C
 export default function AppFooter() {
   return (
     <footer className="app-footer">
-      <div className="glass-container">
-        <div className="footer-content">
-          <div className="footer-column">
+      <div className="glass-container px-4 sm:px-6 md:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12 py-10 sm:py-12 lg:py-14">
+          <div>
             <h4 className="footer-heading"><Mail size={18} /> Información de Contacto</h4>
             <p>
               <a href={EMAIL_URL} className="footer-link" target="_blank" rel="noopener noreferrer">
@@ -24,13 +24,13 @@ export default function AppFooter() {
             <p><Globe size={16} /> Centro Místico Universal</p>
           </div>
 
-          <div className="footer-column">
+          <div>
             <h4 className="footer-heading"><Info size={18} /> Sobre la Numerología</h4>
             <p>La numerología es una ciencia sagrada milenaria que estudia la vibración de los números y su influencia en nuestras vidas.</p>
             <p style={{ marginTop: 8 }}>Cada número posee una energía única que revela aspectos profundos de nuestra personalidad, destino y propósito espiritual.</p>
           </div>
 
-          <div className="footer-column">
+          <div className="sm:col-span-2 lg:col-span-1">
             <h4 className="footer-heading"><Settings size={18} /> Nuestros Servicios</h4>
             <ul className="footer-services">
               <li>Análisis Numerológico Completo</li>

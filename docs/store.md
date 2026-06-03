@@ -54,3 +54,4 @@ function MyComponent() {
   // Selectores individuales evitan re-renders innecesarios
 }
 ```
+npmk 

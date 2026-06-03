@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 9.5,
     fontWeight: 400,
     lineHeight: 1.8,

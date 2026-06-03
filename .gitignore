@@ -4,3 +4,9 @@ dist
 .env.local
 .vercel
 coverage
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+.vite/

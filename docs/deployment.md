@@ -12,12 +12,15 @@ dist/
 ├── index.html                   (~0.9 kB)
 ├── assets/
 │   ├── imagenes/numerologo.png  (hero image)
-│   ├── index-*.css              (~42 kB)
-│   ├── index-*.js               (~352 kB)  — bundle principal
-│   ├── ResultsPage-*.js         (~79 kB)   — lazy loaded
-│   ├── ContactPage-*.js         (~3 kB)    — lazy loaded
-│   ├── AboutPage-*.js           (~2 kB)    — lazy loaded
-│   └── NotFoundPage-*.js        (~1.3 kB)  — lazy loaded
+│   ├── index-*.css              (~60 kB)
+│   ├── index-*.js               (~565 kB)  — bundle principal
+│   ├── ResultsPage-*.js         (~65 kB)   — lazy loaded
+│   ├── LoginPage-*.js           (~3.8 kB)  — lazy loaded
+│   ├── RegisterPage-*.js        (~6 kB)    — lazy loaded
+│   ├── DashboardPage-*.js       (~3.8 kB)  — lazy loaded
+│   ├── ContactPage-*.js         (~13 kB)   — lazy loaded
+│   ├── AboutPage-*.js           (~2.3 kB)  — lazy loaded
+│   └── NotFoundPage-*.js        (~1 kB)    — lazy loaded
 ```
 
 ## Previsualización Local
@@ -34,7 +37,8 @@ npm run preview
 2. Framework: `Vite`
 3. Build command: `npm run build`
 4. Output directory: `dist`
-5. Despliegue automático en cada push
+5. Variables de entorno: Agregar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_EMAILJS_*`
+6. Despliegue automático en cada push
 
 ### Netlify
 
@@ -45,29 +49,36 @@ npm run preview
    ```
    /*    /index.html   200
    ```
+5. Variables de entorno en Dashboard → Site settings → Environment variables
 
 ### GitHub Pages
 
 1. En `vite.config.js`: `base: '/<repo-name>/'`
 2. `npm run build`
 3. Desplegar `dist/` a la branch `gh-pages`
+4. Las variables de entorno deben estar en `.env` durante el build
 
 ## Variables de Entorno
 
-Crear archivo `.env` en la raíz:
-
 ```env
+# Supabase (OBLIGATORIO para auth y base de datos)
+VITE_SUPABASE_URL=https://wtkwpppbwhtshuxqgasi.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
+
 # EmailJS (opcional — si no se configura, el formulario usa mailto:)
 VITE_EMAILJS_SERVICE_ID=service_xxx
 VITE_EMAILJS_TEMPLATE_ID=template_xxx
 VITE_EMAILJS_PUBLIC_KEY=xxx
 ```
 
+> **Nota**: Si `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` no están configurados, el cliente Supabase se crea como `null` y los services lanzan un error claro.
+
 ## Performance
 
-- **Lazy loading** automático en rutas secundarias y tabs de resultados
+- **Lazy loading** en rutas secundarias, tabs de resultados, y páginas de auth
 - **CSS crítico** inline en el HTML
 - **Iconos SVG** con Lucide (sin dependencias de font icons)
 - **Gzip** habilitado por defecto en Vite
-- **PDF con @react-pdf/renderer** cargado solo en ResultsPage (lazy)
+- **PDF con @react-pdf/renderer** cargado solo en PDFTab (lazy)
 - **Recharts** cargado solo en GraficasTab (lazy)
+- **TailwindCSS JIT** genera solo las utilidades usadas

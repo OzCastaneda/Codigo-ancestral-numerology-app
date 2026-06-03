@@ -22,20 +22,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   title: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Playfair Display',
     fontSize: 14,
     fontWeight: 700,
     color: '#C4B5FD',
     lineHeight: 1.4,
   },
   numberBadge: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 18,
     fontWeight: 800,
     lineHeight: 1,
   },
   meaning: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 9.5,
     fontWeight: 400,
     color: '#94A3B8',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionLabel: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 10,
     fontWeight: 700,
     lineHeight: 1.5,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   energyText: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 9,
     fontWeight: 400,
     fontStyle: 'italic',

@@ -14,13 +14,13 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   left: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 7,
     fontWeight: 400,
     color: '#475569',
   },
   right: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Lato',
     fontSize: 7,
     fontWeight: 400,
     color: '#475569',
