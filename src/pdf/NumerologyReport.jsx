@@ -116,7 +116,7 @@ function ResultsBlock({ results, fullName, birthdate }) {
   ];
 
   return (
-    <View wrap={false}>
+    <View>
       <PDFSectionTitle
         title="Tus Números de Vida"
         subtitle={`${fullName} — ${formatDate(birthdate)}`}
@@ -151,13 +151,13 @@ function KabbalisticBlock({ results, kabbalistic }) {
   if (entries.length === 0) return null;
 
   return (
-    <View wrap={false}>
+    <View>
       <PDFSectionTitle
         title="Correspondencias Cabalísticas"
         subtitle="Letras hebreas, Sepher Yetzirah y Árbol de la Vida"
       />
       {entries.map(([key, letter]) => (
-        <View key={key} style={styles.kabbalisticCard} wrap={false}>
+        <View key={key} style={styles.kabbalisticCard} wrap>
           <PDFCard variant="gold">
             <View style={styles.interpHeader}>
               <Text style={[styles.interpTitle, { color: '#F59E0B' }]}>
@@ -200,7 +200,7 @@ function AstrologyBlock({ zodiac }) {
   if (!zodiac || !zodiac.sign) return null;
 
   return (
-    <View wrap={false}>
+    <View>
       <PDFSectionTitle
         title="Perfil Astrológico Cabalístico"
         subtitle="Signo zodiacal según la tradición hebrea"

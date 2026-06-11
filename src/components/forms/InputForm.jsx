@@ -34,7 +34,7 @@ export default function InputForm() {
     if (user) {
       try {
         const { results } = useNumerologyStore.getState();
-        await createReport({
+        const report = await createReport({
           user_id: user.id,
           full_name: fullName,
           birth_date: birthdate,
@@ -44,6 +44,8 @@ export default function InputForm() {
           karmic_number: results.mission,
           report_data: results,
         });
+        console.log('Report created:', report.id);
+        useNumerologyStore.getState().setReportId(report.id);
       } catch (error) {
         console.error('Error saving report:', error);
       }

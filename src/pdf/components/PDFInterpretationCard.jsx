@@ -81,7 +81,7 @@ export default function PDFInterpretationCard({ interpretation, title }) {
   const color = getNumberColor(num);
 
   return (
-    <View style={styles.card} wrap={false}>
+    <View style={styles.card} wrap>
       <View style={styles.headerRow}>
         <View style={styles.titleGroup}>
           <Text style={styles.title}>{title}</Text>

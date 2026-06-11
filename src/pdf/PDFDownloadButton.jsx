@@ -4,6 +4,8 @@ import { FileText, Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import NumerologyReport from './NumerologyReport';
 import { getReportFileName } from './utils/helpers';
+import { uploadPDF } from '../services/storageService';
+import { supabase } from '../lib/supabase';
 
 export default function PDFDownloadButton({ profile, fullName, birthdate }) {
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,8 @@ export default function PDFDownloadButton({ profile, fullName, birthdate }) {
     setSuccess(false);
 
     try {
+      console.log('Starting PDF generation');
+
       const blob = await pdf(
         <NumerologyReport
           profile={profile}
@@ -23,6 +27,24 @@ export default function PDFDownloadButton({ profile, fullName, birthdate }) {
           birthdate={birthdate}
         />
       ).toBlob();
+
+      console.log('PDF Blob created');
+      console.log(blob);
+      console.log('Blob size:', blob.size);
+
+      console.log('Uploading PDF to Supabase...');
+      console.log('Filename:', fileName);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Current session:', session);
+      console.log('Current user:', session?.user);
+
+      try {
+        const tempResult = await uploadPDF(blob, fileName);
+        console.log('Upload result:', tempResult);
+      } catch (uploadErr) {
+        console.error('PDF upload error:', uploadErr);
+      }
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');

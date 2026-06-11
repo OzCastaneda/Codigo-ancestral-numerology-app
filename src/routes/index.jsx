@@ -10,6 +10,7 @@ const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
 const LoginPage = lazy(() => import('../pages/Login/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/Register/RegisterPage'));
 const DashboardPage = lazy(() => import('../pages/Dashboard/DashboardPage'));
+const ReportDetailPage = lazy(() => import('../pages/ReportDetail/ReportDetailPage'));
 
 const FALLBACK = (
   <div className="content" style={{ justifyContent: 'center', padding: '60px 20px' }}>
@@ -32,6 +33,14 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/report/:id"
+          element={
+            <ProtectedRoute>
+              <ReportDetailPage />
             </ProtectedRoute>
           }
         />

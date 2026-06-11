@@ -4,21 +4,50 @@ import { FileText, Download, Loader2, CheckCircle, Eye, Sparkles, FileDown, Aler
 import { pdf } from '@react-pdf/renderer';
 import NumerologyReport from '../../../pdf/NumerologyReport';
 import { getReportFileName } from '../../../pdf/utils/helpers';
+import { supabase } from '../../../lib/supabase';
+import { uploadPDF } from '../../../services/storageService';
+import { updateReportPDF } from '../../../services/reportService';
+import useNumerologyStore from '../../../store/useNumerologyStore';
 
 export default function PDFTab({ profile, fullName, birthdate }) {
+  console.log('COMPONENT MOUNTED');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
   const handleDownload = async () => {
+    console.log('DOWNLOAD FLOW STARTED');
     if (loading) return;
     setLoading(true);
     setSuccess(false);
     setError(null);
     try {
+      console.log('Starting PDF generation');
       const blob = await pdf(
         <NumerologyReport profile={profile} fullName={fullName} birthdate={birthdate} />
       ).toBlob();
+      console.log('PDF Blob created');
+      console.log('Blob size:', blob.size);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log('Current session:', session);
+      console.log('Current user:', session?.user);
+
+      console.log('Uploading PDF to Supabase...');
+      console.log('Filename:', getReportFileName(fullName));
+      try {
+        const uploadResult = await uploadPDF(blob, getReportFileName(fullName));
+        console.log('Upload result:', uploadResult);
+
+        const reportId = useNumerologyStore.getState().reportId;
+        if (reportId && uploadResult?.publicUrl) {
+          await updateReportPDF(reportId, uploadResult.publicUrl);
+          console.log('PDF URL saved to database');
+        }
+      } catch (uploadErr) {
+        console.error('PDF upload error:', uploadErr);
+      }
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;

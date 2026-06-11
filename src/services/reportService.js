@@ -57,6 +57,21 @@ export async function getUserReports(userId) {
   return data;
 }
 
+export async function updateReportPDF(reportId, pdfUrl) {
+  const client = ensureClient();
+  const { data, error } = await client
+    .from('numerology_reports')
+    .update({ pdf_url: pdfUrl })
+    .eq('id', reportId)
+    .select()
+    .single();
+  if (error) {
+    console.error('Error updating PDF URL:', error);
+    throw error;
+  }
+  return data;
+}
+
 export async function getReportById(reportId) {
   const client = ensureClient();
   const { data, error } = await client
@@ -64,6 +79,9 @@ export async function getReportById(reportId) {
     .select('*')
     .eq('id', reportId)
     .single();
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching report by ID:', error);
+    throw error;
+  }
   return data;
 }

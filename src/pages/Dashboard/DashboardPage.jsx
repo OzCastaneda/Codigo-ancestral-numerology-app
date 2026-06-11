@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LogOut, User, History, Sparkles } from 'lucide-react';
+import { LogOut, User, History, Sparkles, Eye } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getUserReports } from '../../services/reportService';
 
@@ -76,16 +76,28 @@ export default function DashboardPage() {
               <div className="dash-reports-list">
                 {reports.map((report) => (
                   <div key={report.id} className="dash-report-item">
-                    <h3 className="dash-report-name text-lg sm:text-xl">
-                      {report.full_name}
-                    </h3>
-                    <p className="text-sm sm:text-base">Destino: {report.destiny_number}</p>
-                    <p className="text-sm sm:text-base">Alma: {report.soul_number}</p>
-                    <p className="text-sm sm:text-base">Personalidad: {report.personality_number}</p>
-                    <p className="text-sm sm:text-base">Kármico: {report.karmic_number}</p>
-                    <p className="dash-report-date text-xs sm:text-sm">
-                      {new Date(report.created_at).toLocaleDateString()}
-                    </p>
+                    <div className="dash-report-row">
+                      <div className="dash-report-info">
+                        <h3 className="dash-report-name text-lg sm:text-xl">
+                          {report.full_name}
+                        </h3>
+                        <p className="text-sm sm:text-base">Destino: {report.destiny_number}</p>
+                        <p className="text-sm sm:text-base">Alma: {report.soul_number}</p>
+                        <p className="text-sm sm:text-base">Personalidad: {report.personality_number}</p>
+                        <p className="text-sm sm:text-base">Kármico: {report.karmic_number}</p>
+                        <p className="dash-report-date text-xs sm:text-sm">
+                          {new Date(report.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/report/${report.id}`)}
+                        className="dash-report-btn"
+                        title="Ver Reporte"
+                      >
+                        <Eye size={18} />
+                        <span>Ver Reporte</span>
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

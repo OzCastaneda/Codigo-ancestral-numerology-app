@@ -5,12 +5,14 @@ const useNumerologyStore = create((set, get) => ({
   fullName: '',
   birthdate: '',
   results: null,
+  reportId: null,
   isLoading: false,
   error: null,
   toast: null,
 
   setFullName: (fullName) => set({ fullName }),
   setBirthdate: (birthdate) => set({ birthdate }),
+  setReportId: (reportId) => set({ reportId }),
 
   showToast: (message, type = 'error') => {
     set({ toast: { message, type } });
