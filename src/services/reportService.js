@@ -72,6 +72,21 @@ export async function updateReportPDF(reportId, pdfUrl) {
   return data;
 }
 
+export async function deleteReport(reportId) {
+  const client = ensureClient();
+  const { data, error } = await client
+    .from('numerology_reports')
+    .delete()
+    .eq('id', reportId)
+    .select()
+    .single();
+  if (error) {
+    console.error('Error deleting report:', error);
+    throw error;
+  }
+  return { success: true, deletedId: reportId };
+}
+
 export async function getReportById(reportId) {
   const client = ensureClient();
   const { data, error } = await client
