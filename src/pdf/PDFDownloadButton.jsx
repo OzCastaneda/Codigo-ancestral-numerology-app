@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import NumerologyReport from './NumerologyReport';
 import { getReportFileName } from './utils/helpers';
 import { uploadPDF } from '../services/storageService';
-import { supabase } from '../lib/supabase';
+import { ensureClient } from '../lib/supabase';
 
 export default function PDFDownloadButton({ profile, fullName, birthdate }) {
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,8 @@ export default function PDFDownloadButton({ profile, fullName, birthdate }) {
       console.log('Uploading PDF to Supabase...');
       console.log('Filename:', fileName);
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const client = ensureClient();
+      const { data: { session } } = await client.auth.getSession();
       console.log('Current session:', session);
       console.log('Current user:', session?.user);
 

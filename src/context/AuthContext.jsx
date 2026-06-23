@@ -15,11 +15,15 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    authService.getSession().then((s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      setLoading(false);
-    });
+    authService.getSession()
+      .then((s) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, s) => {

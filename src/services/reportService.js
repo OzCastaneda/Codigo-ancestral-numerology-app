@@ -1,13 +1,4 @@
-import { supabase } from '../lib/supabase';
-
-function ensureClient() {
-  if (!supabase) {
-    throw new Error(
-      'Supabase no está configurado. Define VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en tu .env'
-    );
-  }
-  return supabase;
-}
+import { ensureClient } from '../lib/supabase';
 
 export async function createReport(reportData) {
   const client = ensureClient();
@@ -41,7 +32,8 @@ export async function saveReport(userId, reportData) {
 }
 
 export async function getUserReports(userId) {
-  const { data, error } = await supabase
+  const client = ensureClient();
+  const { data, error } = await client
     .from('numerology_reports')
     .select('*')
     .eq('user_id', userId)

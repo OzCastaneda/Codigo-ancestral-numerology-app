@@ -1,24 +1,5 @@
-import { supabase } from '../lib/supabase';
+import { ensureClient } from '../lib/supabase';
 
-function ensureClient() {
-  if (!supabase) {
-    throw new Error(
-      'Supabase no está configurado. Define VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en tu .env'
-    );
-  }
-  return supabase;
-}
-
-/**
- * Sube un archivo PDF al bucket "reports" en Supabase Storage.
- *
- * La ruta de almacenamiento es: {timestamp}-{fileName} dentro del bucket "reports".
- * Esto evita colisiones entre archivos con el mismo nombre.
- *
- * Después de la subida obtiene la URL pública del archivo
- * mediante getPublicUrl() para que pueda ser descargada o
- * visualizada desde cualquier lugar.
- */
 export async function uploadPDF(blob, fileName) {
   const client = ensureClient();
   const timestamp = Date.now();
