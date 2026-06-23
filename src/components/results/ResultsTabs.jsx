@@ -1,6 +1,6 @@
 import { useState, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, BookOpen, BarChart3, TreePine, Zap, FileText, Loader2 } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, TreePine, Globe, FileText, Loader2 } from 'lucide-react';
 
 const ResumenTab = lazy(() => import('./tabs/ResumenTab'));
 const InterpretacionesTab = lazy(() => import('./tabs/InterpretacionesTab'));
@@ -14,7 +14,7 @@ const TABS = [
   { id: 'interpretaciones', label: 'Interpretaciones', icon: BookOpen },
   { id: 'graficas', label: 'Gráficas', icon: BarChart3 },
   { id: 'arbol', label: 'Árbol Cabalístico', icon: TreePine },
-  { id: 'energias', label: 'Energías', icon: Zap },
+  { id: 'energias', label: 'Astrología Cabalística', icon: Globe },
   { id: 'pdf', label: 'PDF', icon: FileText },
 ];
 

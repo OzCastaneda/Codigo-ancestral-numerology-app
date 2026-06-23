@@ -1,43 +1,97 @@
-import { motion } from 'framer-motion';
-import { Globe, Sun, Moon, Wind, Zap, Sparkles, Palette, Compass, Heart, User, Star } from 'lucide-react';
-import { KABBALAH } from '../../../features/numerology/data/numerologyData';
-import { getNumberColor } from '../../charts/chartConfig';
-import AstrologyProfile from '../../../features/numerology/components/AstrologyProfile';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Star, Sun, Compass, Shield, Sparkles, Calendar, Globe } from 'lucide-react';
+import ASTROLOGIA_KABALISTICA, { getKabbalisticSign, getTikunSign, ZODIAC_COLORS } from '../../../data/astrologiaKabalisticaData';
 
-const PLANETARY_ENERGIES = [
-  { planet: 'Sol', color: '#F59E0B', element: 'Fuego', vibration: 'Voluntad, poder, individualidad' },
-  { planet: 'Luna', color: '#C4B5FD', element: 'Agua', vibration: 'Emoción, intuición, receptividad' },
-  { planet: 'Marte', color: '#EF4444', element: 'Fuego', vibration: 'Acción, impulso, coraje' },
-  { planet: 'Mercurio', color: '#22D3EE', element: 'Aire', vibration: 'Comunicación, intelecto, adaptabilidad' },
-  { planet: 'Júpiter', color: '#3B82F6', element: 'Aire', vibration: 'Expansión, sabiduría, abundancia' },
-  { planet: 'Venus', color: '#EC4899', element: 'Tierra', vibration: 'Amor, belleza, armonía' },
-  { planet: 'Saturno', color: '#10B981', element: 'Tierra', vibration: 'Estructura, disciplina, responsabilidad' },
-];
+const SECTION_ICONS = {
+  pruebasCamino: Shield,
+  sintesisMision: Star,
+  tikunGeneral: Compass,
+  nisyotPrincipales: Shield,
+  recomendacionesCamino: Sun,
+  practicasTikun: Sparkles,
+  fechasCiclos: Calendar,
+};
 
-const ARCHETYPES = [
-  { num: 1, name: 'El Creador', desc: 'Líder visionario que inicia nuevos ciclos', color: '#8B5CF6' },
-  { num: 2, name: 'La Mediadora', desc: 'Puente entre opuestos, diplomática natural', color: '#06B6D4' },
-  { num: 3, name: 'La Expresiva', desc: 'Artista y comunicadora que embellece el mundo', color: '#F59E0B' },
-  { num: 4, name: 'El Constructor', desc: 'Arquitecto de realidades sólidas y estables', color: '#10B981' },
-  { num: 5, name: 'El Explorador', desc: 'Aventurero que busca libertad y experiencia', color: '#F97316' },
-  { num: 6, name: 'El Guardián', desc: 'Protector y consejero que sirve con amor', color: '#EC4899' },
-  { num: 7, name: 'El Sabio', desc: 'Buscador de verdad y conocimiento profundo', color: '#3B82F6' },
-  { num: 8, name: 'El Poderoso', desc: 'Manifestador de abundancia y autoridad', color: '#6366F1' },
-  { num: 9, name: 'El Sabio Universal', desc: 'Compasivo sanador que trasciende el ego', color: '#14B8A6' },
-];
+const SECTION_TITLES = {
+  pruebasCamino: 'Las Pruebas (Nisyonot) del Camino',
+  sintesisMision: 'Síntesis: La Misión del Alma',
+  tikunGeneral: 'El Tikun General',
+  nisyotPrincipales: 'Las Nisyot Principales',
+  recomendacionesCamino: 'Recomendaciones para el Camino Espiritual',
+  practicasTikun: 'Prácticas para Fortalecer el Tikun',
+  fechasCiclos: 'Fechas y Ciclos Importantes',
+};
 
-function EnergyCard({ icon: Icon, title, children, color = 'var(--color-primary-light)', delay = 0 }) {
+function SignSelector({ signs, activeId, onSelect, userSignId }) {
+  return (
+    <div className="flex flex-wrap gap-2 justify-center">
+      {signs.map((sign) => {
+        const isActive = sign.id === activeId;
+        const isUserSign = sign.id === userSignId;
+        const borderColor = ZODIAC_COLORS[sign.signo];
+        return (
+          <motion.button
+            key={sign.id}
+            onClick={() => onSelect(sign.id)}
+            className="relative"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            style={{
+              padding: '8px 18px',
+              borderRadius: 10,
+              background: isActive
+                ? `linear-gradient(135deg, ${borderColor}25, ${borderColor}08)`
+                : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${isActive ? borderColor + '60' : 'rgba(255,255,255,0.08)'}`,
+              color: 'var(--color-text-primary)',
+              fontFamily: 'var(--font-display)',
+              fontSize: '0.85rem',
+              fontWeight: isActive ? 700 : 500,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              opacity: isActive ? 1 : 0.6,
+            }}
+          >
+            {isUserSign && (
+              <span style={{
+                position: 'absolute',
+                top: -6,
+                right: -6,
+                fontSize: '0.6rem',
+                background: 'var(--color-accent)',
+                color: '#000',
+                padding: '1px 6px',
+                borderRadius: 6,
+                fontWeight: 700,
+                lineHeight: '16px',
+              }}>
+                TU SIGNO
+              </span>
+            )}
+            <span style={{ marginRight: 6 }}>{sign.signo}</span>
+            <span style={{ fontSize: '0.7rem', opacity: 0.6, fontWeight: 400 }}>
+              ({sign.mesHebreo})
+            </span>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+function InfoBlock({ icon: Icon, title, children, color }) {
   return (
     <motion.div
       className="glass-card"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay }}
+      transition={{ duration: 0.35 }}
     >
       <div className="card-body">
-        <h3 className="section-title" style={{ marginBottom: 14 }}>
-          <Icon size={18} className="icon" style={{ color }} />
-          {title}
+        <h3 className="section-title" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Icon size={18} className="icon" style={{ color, flexShrink: 0 }} />
+          <span>{title}</span>
         </h3>
         {children}
       </div>
@@ -45,183 +99,356 @@ function EnergyCard({ icon: Icon, title, children, color = 'var(--color-primary-
   );
 }
 
-function PlanetsSection() {
+function SectionRenderer({ section, data, color }) {
+  const Icon = SECTION_ICONS[section];
+  const title = SECTION_TITLES[section];
+
+  if (section === 'pruebasCamino' || section === 'nisyotPrincipales' || section === 'recomendacionesCamino' || section === 'practicasTikun' || section === 'fechasCiclos') {
+    return (
+      <InfoBlock icon={Icon} title={title} color={color}>
+        <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {data[section].map((item, i) => (
+            <motion.li
+              key={i}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: i * 0.04 }}
+              style={{
+                padding: '12px 16px',
+                background: 'rgba(255,255,255,0.02)',
+                borderRadius: 8,
+                border: `1px solid ${color}10`,
+                borderLeft: `3px solid ${color}40`,
+                color: 'var(--color-text-secondary)',
+                fontSize: '0.82rem',
+                lineHeight: 1.55,
+              }}
+            >
+              <span style={{ color, fontWeight: 700, marginRight: 6 }}>{i + 1}.</span>
+              {item}
+            </motion.li>
+          ))}
+        </ul>
+      </InfoBlock>
+    );
+  }
+
+  if (section === 'sintesisMision' || section === 'tikunGeneral') {
+    return (
+      <InfoBlock icon={Icon} title={title} color={color}>
+        <div style={{
+          padding: '16px 20px',
+          background: `linear-gradient(135deg, ${color}08, transparent)`,
+          borderRadius: 10,
+          border: `1px solid ${color}15`,
+          color: 'var(--color-text-secondary)',
+          fontSize: '0.85rem',
+          lineHeight: 1.7,
+        }}>
+          {data[section]}
+        </div>
+      </InfoBlock>
+    );
+  }
+
+  return null;
+}
+
+function SignDetail({ sign }) {
+  const color = ZODIAC_COLORS[sign.signo];
+  const sections = Object.keys(SECTION_TITLES);
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
-      {PLANETARY_ENERGIES.map((e, i) => (
-        <motion.div
-          key={e.planet}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 + i * 0.04 }}
-          style={{
-            padding: '14px 16px',
-            background: `linear-gradient(135deg, ${e.color}08, transparent)`,
-            border: `1px solid ${e.color}15`,
-            borderRadius: 10,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <motion.div
+        className="glass-card"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        style={{
+          background: `linear-gradient(135deg, ${color}12, rgba(255,255,255,0.02))`,
+          border: `1px solid ${color}25`,
+        }}
+      >
+        <div className="card-body">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start' }}>
+            <div style={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              background: `${color}18`,
+              border: `2px solid ${color}50`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              boxShadow: `0 0 24px ${color}20`,
+            }}>
+              <span style={{
+                fontFamily: 'serif',
+                fontSize: '1.8rem',
+                color,
+                fontWeight: 700,
+                lineHeight: 1,
+              }}>
+                {sign.letraSigno.hebrea}
+              </span>
+            </div>
+
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'baseline', marginBottom: 4 }}>
+                <h2 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '1.5rem',
+                  fontWeight: 800,
+                  color: 'var(--color-text-primary)',
+                  margin: 0,
+                }}>
+                  {sign.signo}
+                </h2>
+                <span style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '0.9rem',
+                  color: 'var(--color-text-muted)',
+                  fontWeight: 500,
+                }}>
+                  · Mes de {sign.mesHebreo}
+                </span>
+              </div>
+
+              <p style={{
+                color: 'var(--color-text-muted)',
+                fontSize: '0.82rem',
+                fontStyle: 'italic',
+                margin: '0 0 10px',
+              }}>
+                {sign.conceptoClave}
+              </p>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <span className="badge" style={{
+                  background: `${color}15`,
+                  border: `1px solid ${color}25`,
+                  color,
+                  fontSize: '0.72rem',
+                  padding: '3px 10px',
+                  borderRadius: 6,
+                  fontWeight: 600,
+                }}>
+                  <Globe size={11} className="icon" /> {sign.planeta}
+                </span>
+                <span className="badge" style={{
+                  background: `${color}15`,
+                  border: `1px solid ${color}25`,
+                  color,
+                  fontSize: '0.72rem',
+                  padding: '3px 10px',
+                  borderRadius: 6,
+                  fontWeight: 600,
+                }}>
+                  {sign.elemento}
+                </span>
+                <span className="badge" style={{
+                  background: `${color}15`,
+                  border: `1px solid ${color}25`,
+                  color,
+                  fontSize: '0.72rem',
+                  padding: '3px 10px',
+                  borderRadius: 6,
+                  fontWeight: 600,
+                }}>
+                  {sign.parteCuerpo}
+                </span>
+              </div>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              gap: 16,
+              padding: '10px 14px',
+              background: 'rgba(0,0,0,0.15)',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.05)',
+              flexShrink: 0,
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  fontFamily: 'serif',
+                  fontSize: '1.5rem',
+                  color: 'var(--color-text-primary)',
+                  fontWeight: 700,
+                  marginBottom: 2,
+                }}>{sign.letraSigno.hebrea}</div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+                  {sign.letraSigno.nombre}
+                </div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)' }}>
+                  Signo
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  fontFamily: 'serif',
+                  fontSize: '1.5rem',
+                  color: 'var(--color-text-primary)',
+                  fontWeight: 700,
+                  marginBottom: 2,
+                }}>{sign.letraPlaneta.hebrea}</div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+                  {sign.letraPlaneta.nombre}
+                </div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--color-text-muted)' }}>
+                  Planeta
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {sections.map((section, i) => (
+        <SectionRenderer
+          key={section}
+          section={section}
+          data={sign}
+          color={color}
+        />
+      ))}
+    </div>
+  );
+}
+
+function TikunProfile({ tikunSign, zodiacSign }) {
+  if (!tikunSign) return null;
+  const color = ZODIAC_COLORS[tikunSign.signo];
+
+  return (
+    <motion.div
+      className="glass-card"
+      initial={{ opacity: 0, y: 16, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.45 }}
+      style={{
+        background: `linear-gradient(135deg, ${color}15, rgba(255,255,255,0.02))`,
+        border: `1px solid ${color}30`,
+        borderLeft: `4px solid ${color}`,
+      }}
+    >
+      <div className="card-body">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start', marginBottom: 16 }}>
           <div style={{
-            width: 34,
-            height: 34,
+            width: 56,
+            height: 56,
             borderRadius: '50%',
-            background: `${e.color}15`,
-            border: `1px solid ${e.color}30`,
+            background: `${color}18`,
+            border: `2px solid ${color}50`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0,
           }}>
-            <Globe size={15} style={{ color: e.color }} />
+            <Compass size={26} style={{ color }} />
           </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ color: 'var(--color-text-primary)', fontWeight: 600, fontSize: '0.85rem', margin: 0 }}>
-              {e.planet}
-            </p>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.72rem', margin: '1px 0 0' }}>
-              {e.element} · {e.vibration}
-            </p>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-}
-
-function ArchetypesSection({ results }) {
-  if (!results) return null;
-
-  const activeArchetypes = [
-    { key: 'destiny', label: 'Destino', icon: Compass },
-    { key: 'soul', label: 'Alma', icon: Heart },
-    { key: 'personality', label: 'Personalidad', icon: User },
-    { key: 'mission', label: 'Misión', icon: Star },
-  ].map(({ key, label, icon }) => {
-    const num = results[key];
-    const arch = ARCHETYPES.find(a => a.num === num);
-    return { label, icon, num, arch };
-  });
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
-      {activeArchetypes.map(({ label, icon: Icon, num, arch }, i) => {
-        const color = getNumberColor(num);
-        return (
-          <motion.div
-            key={label}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 + i * 0.06 }}
-            style={{
-              padding: '16px 18px',
-              background: `${color}08`,
-              border: `1px solid ${color}20`,
-              borderRadius: 12,
-              textAlign: 'center',
-            }}
-          >
+          <div style={{ flex: 1, minWidth: 200 }}>
             <div style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              background: `${color}15`,
-              border: `2px solid ${color}`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 10px',
-              boxShadow: `0 0 20px ${color}20`,
+              display: 'inline-block',
+              background: `${color}20`,
+              color,
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              padding: '2px 10px',
+              borderRadius: 6,
+              marginBottom: 6,
+              letterSpacing: '0.5px',
             }}>
-              <Icon size={18} style={{ color }} />
+              TU TIKUN PERSONAL
             </div>
-            <p style={{ color, fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 800, margin: 0 }}>
-              {num}
-            </p>
-            <p style={{ color: 'var(--color-text-primary)', fontSize: '0.85rem', fontWeight: 600, margin: '4px 0 2px' }}>
-              {label}: {arch?.name || '—'}
-            </p>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', margin: 0, lineHeight: 1.4 }}>
-              {arch?.desc || ''}
-            </p>
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-}
-
-function PlanetaryColorsSection() {
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 10 }}>
-      {KABBALAH.planetaryColors.map((pc, i) => (
-        <motion.div
-          key={pc.planet}
-          initial={{ opacity: 0, x: -6 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 + i * 0.03 }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '10px 14px',
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: 8,
-            border: '1px solid rgba(255,255,255,0.04)',
-          }}
-        >
-          <div style={{
-            width: 20,
-            height: 20,
-            borderRadius: '50%',
-            background: pc.color,
-            flexShrink: 0,
-            boxShadow: `0 0 8px ${pc.color}50`,
-          }} />
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <p style={{ color: 'var(--color-text-primary)', fontSize: '0.8rem', fontWeight: 600, margin: 0 }}>
-              {pc.planet}
-            </p>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.68rem', margin: 0 }}>
-              {pc.color} · Nota {pc.note}
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '1.4rem',
+              fontWeight: 800,
+              color: 'var(--color-text-primary)',
+              margin: 0,
+            }}>
+              {tikunSign.signo}
+              <span style={{ fontWeight: 400, fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                {' · '}Mes de {tikunSign.mesHebreo}
+              </span>
+            </h2>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.78rem', margin: '4px 0 0' }}>
+              Tu signo zodiacal es <strong>{zodiacSign?.signo}</strong>, pero esta vida tu punto de corrección (Tikun) está en <strong>{tikunSign.signo}</strong>
             </p>
           </div>
-        </motion.div>
-      ))}
-    </div>
+        </div>
+
+        <div style={{
+          padding: '16px 20px',
+          background: 'rgba(0,0,0,0.15)',
+          borderRadius: 10,
+          border: `1px solid ${color}15`,
+          color: 'var(--color-text-secondary)',
+          fontSize: '0.85rem',
+          lineHeight: 1.7,
+        }}>
+          {tikunSign.tikunGeneral}
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
 export default function EnergiasTab({ profile, birthdate }) {
-  const results = profile?.results;
+  const userSign = getKabbalisticSign(birthdate);
+  const tikunSign = getTikunSign(birthdate);
+  const [activeSignId, setActiveSignId] = useState(userSign?.id ?? 0);
 
   return (
     <div className="tab-section">
       <div className="tab-section-header">
-        <h2 className="tab-section-title">Energías</h2>
+        <h2 className="tab-section-title">Astrología Kabalística</h2>
         <p className="tab-section-desc">
-          Planetas, colores, chakras y arquetipos que vibran en tu perfil
+          La sabiduría ancestral del Zóhar y el Séfer Yetzirá aplicada a los 12 signos del Zodíaco hebreo
         </p>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        <EnergyCard icon={Globe} title="Planetas y Vibraciones" color="#F59E0B" delay={0.05}>
-          <PlanetsSection />
-        </EnergyCard>
+        {tikunSign && (
+          <TikunProfile tikunSign={tikunSign} zodiacSign={userSign} />
+        )}
 
-        <EnergyCard icon={Sparkles} title="Arquetipos" color="#8B5CF6" delay={0.1}>
-          <ArchetypesSection results={results} />
-        </EnergyCard>
+        <motion.div
+          className="glass-card"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="card-body">
+            <h3 className="section-title" style={{ marginBottom: 16 }}>
+              <Sun size={18} className="icon" style={{ color: 'var(--color-accent)' }} />
+              Signos del Zodíaco
+            </h3>
+            <SignSelector
+              signs={ASTROLOGIA_KABALISTICA}
+              activeId={activeSignId}
+              onSelect={setActiveSignId}
+              userSignId={userSign?.id}
+            />
+          </div>
+        </motion.div>
 
-        <EnergyCard icon={Palette} title="Colores Planetarios" color="#EC4899" delay={0.15}>
-          <PlanetaryColorsSection />
-        </EnergyCard>
-
-        <EnergyCard icon={Sun} title="Perfil Astrológico" color="#F59E0B" delay={0.2}>
-          <AstrologyProfile results={results} birthdate={birthdate} />
-        </EnergyCard>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSignId}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.25 }}
+          >
+            <SignDetail
+              sign={ASTROLOGIA_KABALISTICA.find(s => s.id === activeSignId)}
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
