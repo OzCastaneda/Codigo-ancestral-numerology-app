@@ -1,4 +1,5 @@
 import { MAP, VOWELS, CONSONANTS, MASTER_NUMBERS } from '../data/numerologyData';
+import { parseDateISO } from '../../../lib/dateUtils';
 
 export function normalizeName(name) {
   return name
@@ -27,10 +28,11 @@ export function reductionChain(n) {
 }
 
 function calculateDestinyNumber(birthdate) {
-  const [year, month, day] = birthdate.split('-').map(Number);
-  const d = reduceToSingleDigit(day);
-  const m = reduceToSingleDigit(month);
-  const y = reduceToSingleDigit(year);
+  const parsed = parseDateISO(birthdate);
+  if (!parsed) throw new Error('Fecha de nacimiento inválida');
+  const d = reduceToSingleDigit(parsed.day);
+  const m = reduceToSingleDigit(parsed.month);
+  const y = reduceToSingleDigit(parsed.year);
   return reduceToSingleDigit(d + m + y);
 }
 
@@ -66,8 +68,9 @@ export function calculateAll(fullName, birthdate) {
 }
 
 export function getZodiacSignIndex(birthdate) {
-  const [, month, day] = birthdate.split('-').map(Number);
-  const md = month * 100 + day;
+  const parsed = parseDateISO(birthdate);
+  if (!parsed) return -1;
+  const md = parsed.month * 100 + parsed.day;
   if (md >= 1222 || md <= 119) return 9;
   if (md >= 120 && md <= 218) return 10;
   if (md >= 219 && md <= 320) return 11;

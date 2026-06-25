@@ -9,44 +9,33 @@ import { uploadPDF } from '../../../services/storageService';
 import { updateReportPDF } from '../../../services/reportService';
 import useNumerologyStore from '../../../store/useNumerologyStore';
 
+const IS_DEV = import.meta.env.DEV;
+
 export default function PDFTab({ profile, fullName, birthdate }) {
-  console.log('COMPONENT MOUNTED');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
   const handleDownload = async () => {
-    console.log('DOWNLOAD FLOW STARTED');
     if (loading) return;
     setLoading(true);
     setSuccess(false);
     setError(null);
     try {
-      console.log('Starting PDF generation');
       const blob = await pdf(
         <NumerologyReport profile={profile} fullName={fullName} birthdate={birthdate} />
       ).toBlob();
-      console.log('PDF Blob created');
-      console.log('Blob size:', blob.size);
 
-      const client = ensureClient();
-      const { data: { session } } = await client.auth.getSession();
-      console.log('Current session:', session);
-      console.log('Current user:', session?.user);
-
-      console.log('Uploading PDF to Supabase...');
-      console.log('Filename:', getReportFileName(fullName));
       try {
+        const client = ensureClient();
+        const { data: { session } } = await client.auth.getSession();
         const uploadResult = await uploadPDF(blob, getReportFileName(fullName));
-        console.log('Upload result:', uploadResult);
-
         const reportId = useNumerologyStore.getState().reportId;
         if (reportId && uploadResult?.publicUrl) {
           await updateReportPDF(reportId, uploadResult.publicUrl);
-          console.log('PDF URL saved to database');
         }
-      } catch (uploadErr) {
-        console.error('PDF upload error:', uploadErr);
+      } catch (supabaseErr) {
+        if (IS_DEV) console.warn('Supabase no disponible, descargando PDF localmente:', supabaseErr.message);
       }
 
       const url = URL.createObjectURL(blob);
@@ -60,8 +49,7 @@ export default function PDFTab({ profile, fullName, birthdate }) {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      console.error('PDF generation error:', err);
-      setError('No se pudo generar el PDF. Por favor, intenta de nuevo más tarde.');
+      setError('No se pudo generar el PDF: ' + err.message);
       setTimeout(() => setError(null), 5000);
     } finally {
       setLoading(false);

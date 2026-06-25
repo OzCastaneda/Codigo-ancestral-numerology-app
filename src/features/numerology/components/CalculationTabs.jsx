@@ -2,6 +2,7 @@ import { useState, memo } from 'react';
 import { Compass, Heart, User, Star, Settings2 } from 'lucide-react';
 import { VOWELS, CONSONANTS } from '../data/numerologyData';
 import { reduceToSingleDigit, reductionChain, buildLetterSection } from '../engine/numerologyEngine';
+import { parseDateISO } from '../../../lib/dateUtils';
 
 const TABS = [
   { id: 'destiny', label: 'Destino', icon: Compass },
@@ -29,23 +30,20 @@ const CalculationTabs = memo(function CalculationTabs({ results, fullName, birth
     );
   }
 
-  const [year, month, day] = birthdate.split('-');
-  const dNum = parseInt(day, 10);
-  const mNum = parseInt(month, 10);
-  const yNum = parseInt(year, 10);
-  const dRed = reduceToSingleDigit(dNum);
-  const mRed = reduceToSingleDigit(mNum);
-  const yRed = reduceToSingleDigit(yNum);
+  const parsed = parseDateISO(birthdate) || { year: '?', month: '?', day: '?' };
+  const dRed = reduceToSingleDigit(parsed.day);
+  const mRed = reduceToSingleDigit(parsed.month);
+  const yRed = reduceToSingleDigit(parsed.year);
   const intermediate = dRed + mRed + yRed;
   const missionSum = results.destiny + results.soul;
   const name = results.name;
 
   const contentMap = {
     destiny: `
-      Fecha: ${day}/${month}/${year}\n
-      Día: ${dNum} → ${reductionChain(dNum)}\n
-      Mes: ${mNum} → ${reductionChain(mNum)}\n
-      Año: ${yNum} → ${reductionChain(yNum)}\n\n
+      Fecha: ${parsed.day}/${parsed.month}/${parsed.year}\n
+      Día: ${parsed.day} → ${reductionChain(parsed.day)}\n
+      Mes: ${parsed.month} → ${reductionChain(parsed.month)}\n
+      Año: ${parsed.year} → ${reductionChain(parsed.year)}\n\n
       ${dRed} + ${mRed} + ${yRed} = ${intermediate} → ${results.destiny}
     `,
     soul: buildLetterSection(name, 'Vocales', ch => VOWELS.has(ch)),

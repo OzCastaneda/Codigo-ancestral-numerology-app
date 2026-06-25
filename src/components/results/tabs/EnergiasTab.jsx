@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Sun, Compass, Shield, Sparkles, Calendar, Globe } from 'lucide-react';
+import { Star, Sun, Compass, Shield, Sparkles, Calendar, Globe, BookOpen } from 'lucide-react';
 import ASTROLOGIA_KABALISTICA, { getKabbalisticSign, getTikunSign, ZODIAC_COLORS } from '../../../data/astrologiaKabalisticaData';
 
 const SECTION_ICONS = {
@@ -318,6 +318,68 @@ function SignDetail({ sign }) {
   );
 }
 
+function VidasPasadasArticle() {
+  return (
+    <motion.div
+      className="glass-card"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.15 }}
+    >
+      <div className="card-body">
+        <h3 className="section-title" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <BookOpen size={18} className="icon" style={{ color: 'var(--color-secondary)', flexShrink: 0 }} />
+          <span>Influencia de Vidas Pasadas</span>
+        </h3>
+
+        <div style={{
+          padding: '16px 20px',
+          background: 'rgba(139,92,246,0.06)',
+          borderRadius: 10,
+          border: '1px solid rgba(139,92,246,0.12)',
+          color: 'var(--color-text-secondary)',
+          fontSize: '0.82rem',
+          lineHeight: 1.7,
+          marginBottom: 12,
+        }}>
+          <p style={{ margin: '0 0 12px' }}>
+            Según la Cábala, nuestra carta astral tiene una posición que revela los secretos de nuestras vidas pasadas: el <strong>Nodo Lunar</strong>, también llamado <strong>punto de corrección (Tikun)</strong>. Esta posición abarca dos aspectos diametralmente opuestos que la astrología convencional llama <strong>"nodo sur"</strong> y <strong>"nodo norte"</strong>.
+          </p>
+          <p style={{ margin: '0 0 12px' }}>
+            El <strong>nodo sur</strong> describe el equipaje que trajimos de vidas anteriores — las decisiones que limitaron el crecimiento de nuestra alma. El <strong>nodo norte</strong> describe el camino de corrección en nuestra vida presente — el Tikun que debemos realizar para evolucionar espiritualmente.
+          </p>
+          <p style={{ margin: 0 }}>
+            El estudio de este punto revela los problemas que enfrentamos perpetuamente, la naturaleza de nuestros impedimentos y los aspectos que tenemos que arreglar para obtener una conciencia superior. Si no emprendemos un trabajo espiritual serio durante nuestra encarnación actual, inevitablemente volveremos al mismo proceso y enfrentaremos nuevamente los mismos obstáculos.
+          </p>
+        </div>
+
+        <div style={{
+          padding: '16px 20px',
+          background: 'rgba(250,204,21,0.05)',
+          borderRadius: 10,
+          border: '1px solid rgba(250,204,21,0.12)',
+          color: 'var(--color-text-secondary)',
+          fontSize: '0.82rem',
+          lineHeight: 1.7,
+        }}>
+          <p style={{ margin: '0 0 8px', fontWeight: 600, color: 'var(--color-text-primary)' }}>
+            ¿Cómo se determina tu Tikun?
+          </p>
+          <p style={{ margin: '0 0 8px' }}>
+            El Nodo Lunar se mueve lentamente a través del zodíaco, cambiando de signo aproximadamente cada 1.5 a 2 años. Los sabios cabalistas, basados en las enseñanzas del Zóhar y el Séfer Yetzirá, calcularon el movimiento exacto del Nodo Lunar desde el año 1900 hasta el 2050.
+          </p>
+          <p style={{ margin: '0 0 8px' }}>
+            Dependiendo del año y el día exacto de tu nacimiento, tu Nodo Lunar (tu punto de Tikun) cae en un signo específico. Por ejemplo, las personas nacidas entre el <strong>6 de julio de 1978 y el 5 de enero de 1980</strong> tienen su Tikun en <strong>Virgo</strong>, mientras que quienes nacieron entre el <strong>8 de enero de 1977 y el 5 de julio de 1978</strong> lo tienen en <strong>Libra</strong>.
+          </p>
+          <p style={{ margin: 0 }}>
+            Esta tabla fue extraída del libro <em>"Astrología Cabalística y el Significado de Nuestras Vidas"</em> del Rav Philip S. Berg, director del Centro de la Cábala, quien dedicó su vida a difundir esta sabiduría ancestral. Cada período en la tabla corresponde al movimiento real del Nodo Lunar calculado por los cabalistas.
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function TikunProfile({ tikunSign, zodiacSign }) {
   if (!tikunSign) return null;
   const color = ZODIAC_COLORS[tikunSign.signo];
@@ -415,6 +477,8 @@ export default function EnergiasTab({ profile, birthdate }) {
         {tikunSign && (
           <TikunProfile tikunSign={tikunSign} zodiacSign={userSign} />
         )}
+
+        <VidasPasadasArticle />
 
         <motion.div
           className="glass-card"
