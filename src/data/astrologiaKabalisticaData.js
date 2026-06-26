@@ -714,6 +714,29 @@ export function getTikunSign(birthdate) {
   return null;
 }
 
+function toDateStr(n) {
+  const y = Math.floor(n / 10000);
+  const m = Math.floor((n % 10000) / 100);
+  const d = n % 100;
+  return `${d.toString().padStart(2, '0')}/${m.toString().padStart(2, '0')}/${y}`;
+}
+
+export function getTikunYearRange(birthdate) {
+  const parsed = parseDateISO(birthdate);
+  if (!parsed) return null;
+  const dateNum = parsed.year * 10000 + parsed.month * 100 + parsed.day;
+  for (const entry of TIKUN_TABLE) {
+    if (dateNum >= entry.start && dateNum <= entry.end) {
+      return {
+        start: toDateStr(entry.start),
+        end: toDateStr(entry.end),
+        sign: ASTROLOGIA_KABALISTICA[entry.sign],
+      };
+    }
+  }
+  return null;
+}
+
 export const ZODIAC_COLORS = Object.freeze({
   Aries: '#EF4444',
   Tauro: '#10B981',
