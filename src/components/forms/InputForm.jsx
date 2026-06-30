@@ -1,21 +1,27 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Calendar, Calculator, Loader2, AlertCircle } from 'lucide-react';
+import { User, Calendar, Calculator, Loader2, AlertCircle, Venus, Mars } from 'lucide-react';
 import { motion } from 'framer-motion';
-import useNumerologyStore from '../../store/useNumerologyStore';
+import useNumerologyStore, {
+  useFullName, useBirthdate, useSex, useIsLoading,
+  useSetFullName, useSetBirthdate, useSetSex,
+  useCalculate, useShowToast,
+} from '../../store/useNumerologyStore';
 import { createReport } from '../../services/reportService';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function InputForm() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const fullName = useNumerologyStore((s) => s.fullName);
-  const birthdate = useNumerologyStore((s) => s.birthdate);
-  const isLoading = useNumerologyStore((s) => s.isLoading);
-  const setFullName = useNumerologyStore((s) => s.setFullName);
-  const setBirthdate = useNumerologyStore((s) => s.setBirthdate);
-  const calculate = useNumerologyStore((s) => s.calculate);
-  const showToast = useNumerologyStore((s) => s.showToast);
+  const fullName = useFullName();
+  const birthdate = useBirthdate();
+  const sex = useSex();
+  const isLoading = useIsLoading();
+  const setFullName = useSetFullName();
+  const setBirthdate = useSetBirthdate();
+  const setSex = useSetSex();
+  const calculate = useCalculate();
+  const showToast = useShowToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,11 +44,12 @@ export default function InputForm() {
           user_id: user.id,
           full_name: fullName,
           birth_date: birthdate,
+          sex,
           destiny_number: results.destiny,
           soul_number: results.soul,
           personality_number: results.personality,
           karmic_number: results.mission,
-          report_data: results,
+          report_data: { ...results, sex },
         });
         console.log('Report created:', report.id);
         useNumerologyStore.getState().setReportId(report.id);
@@ -94,6 +101,47 @@ export default function InputForm() {
               onChange={(e) => setBirthdate(e.target.value)}
               disabled={isLoading}
             />
+          </div>
+        </div>
+        <div className="form-group">
+          <label className="text-sm sm:text-base">Sexo</label>
+          <div style={{
+            display: 'flex',
+            gap: 12,
+            marginTop: 6,
+          }}>
+            {[
+              { value: 'masculino', icon: Mars, label: 'Masculino' },
+              { value: 'femenino', icon: Venus, label: 'Femenino' },
+            ].map(({ value, icon: Icon, label }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setSex(value)}
+                disabled={isLoading}
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  padding: '10px 16px',
+                  borderRadius: 10,
+                  border: `2px solid ${sex === value ? 'var(--color-primary-light)' : 'rgba(255,255,255,0.08)'}`,
+                  background: sex === value ? 'rgba(139,92,246,0.12)' : 'rgba(255,255,255,0.02)',
+                  color: sex === value ? 'var(--color-primary-light)' : 'var(--color-text-muted)',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  fontFamily: 'inherit',
+                  fontSize: '0.9rem',
+                  fontWeight: sex === value ? 700 : 400,
+                  transition: 'all 0.2s',
+                  opacity: isLoading ? 0.6 : 1,
+                }}
+              >
+                <Icon size={16} />
+                {label}
+              </button>
+            ))}
           </div>
         </div>
         <button className="btn-premium w-full text-base min-h-[48px] sm:min-h-[44px]" type="submit" disabled={isLoading}>

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { AlertTriangle, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import useNumerologyStore from '../../store/useNumerologyStore';
+import useNumerologyStore, { useToastValue } from '../../store/useNumerologyStore';
 
 export default function Toast() {
-  const toast = useNumerologyStore((s) => s.toast);
+  const toast = useToastValue();
 
   useEffect(() => {
     if (toast) {
