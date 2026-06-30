@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { useState } from 'react';
 import { UserPlus, Mail, Lock, User, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import validatePassword from '../../utils/passwordValidator';
+import '../../styles/passwordStrength.css';
 
 const registerSchema = z
   .object({
@@ -14,7 +16,7 @@ const registerSchema = z
     email: z.string().min(1, 'El email es obligatorio').email('Email inválido'),
     password: z
       .string()
-      .min(6, 'La contraseña debe tener al menos 6 caracteres')
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
       .max(100, 'La contraseña es demasiado larga'),
     confirmPassword: z.string().min(1, 'Confirma tu contraseña'),
   })
@@ -26,6 +28,7 @@ const registerSchema = z
 export default function RegisterForm({ onSubmit }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(null);
 
   const {
     register,
@@ -109,7 +112,9 @@ export default function RegisterForm({ onSubmit }) {
             type={showPassword ? 'text' : 'password'}
             placeholder="Mín. 6 caracteres"
             className={`auth-input w-full px-4 py-3 min-h-[48px] sm:min-h-[44px] text-base rounded-xl pr-12 ${errors.password ? 'auth-input-error' : ''}`}
-            {...register('password')}
+            {...register('password', {
+              onChange: (e) => setPasswordStrength(validatePassword(e.target.value)),
+            })}
             autoComplete="new-password"
           />
           <button
@@ -122,6 +127,25 @@ export default function RegisterForm({ onSubmit }) {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
+        {passwordStrength && (
+          <div className="password-strength">
+            <div className="strength-bar-bg">
+              <div
+                className="strength-bar-fill"
+                style={{ width: `${(passwordStrength.score / 4) * 100}%` }}
+                data-score={passwordStrength.score}
+              />
+            </div>
+            <span className="strength-label">{passwordStrength.strengthLabel}</span>
+            {passwordStrength.feedback.length > 0 && (
+              <ul className="strength-suggestions">
+                {passwordStrength.feedback.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         {errors.password && (
           <span className="auth-field-error text-xs sm:text-sm">{errors.password.message}</span>
         )}
@@ -159,14 +183,14 @@ export default function RegisterForm({ onSubmit }) {
       <button
         type="submit"
         className="auth-submit-btn flex items-center justify-center gap-2.5 w-full py-3.5 min-h-[48px] sm:min-h-[44px] text-base font-semibold rounded-xl mt-1"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !passwordStrength?.isStrong}
       >
         {isSubmitting ? (
           <span className="auth-spinner" />
         ) : (
           <UserPlus size={18} />
         )}
-        <span>{isSubmitting ? 'Creando cuenta...' : 'Crear Cuenta'}</span>
+        <span>{isSubmitting ? 'Creando cuenta...' : !passwordStrength?.isStrong ? 'Crea una contraseña más fuerte' : 'Crear Cuenta'}</span>
       </button>
     </form>
   );

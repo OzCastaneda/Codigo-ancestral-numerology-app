@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { calculateAll } from '../features/numerology/engine/numerologyEngine';
+import { getUserReports as fetchUserReports } from '../services/reportService';
+
+const CACHE_TTL = 5 * 60 * 1000;
 
 const useNumerologyStore = create((set, get) => ({
   fullName: '',
@@ -10,6 +13,8 @@ const useNumerologyStore = create((set, get) => ({
   isLoading: false,
   error: null,
   toast: null,
+
+  reportCache: {},
 
   setFullName: (fullName) => set({ fullName }),
   setBirthdate: (birthdate) => set({ birthdate }),
@@ -48,6 +53,30 @@ const useNumerologyStore = create((set, get) => ({
       return false;
     }
   },
+
+  getUserReports: async (userId, page = 1, pageSize = 10) => {
+    const { reportCache } = get();
+    const now = Date.now();
+    const cacheKey = `${userId}_${page}`;
+
+    if (reportCache[cacheKey] && (now - reportCache[cacheKey].fetchedAt) < CACHE_TTL) {
+      return reportCache[cacheKey].data;
+    }
+
+    try {
+      const result = await fetchUserReports(userId, page, pageSize);
+      set({
+        reportCache: { ...get().reportCache, [cacheKey]: { data: result, fetchedAt: now } },
+      });
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  clearReportCache: () => {
+    set({ reportCache: {} });
+  },
 }));
 
 export const useFullName = () => useNumerologyStore((s) => s.fullName);
@@ -66,5 +95,7 @@ export const useSetReportId = () => useNumerologyStore((s) => s.setReportId);
 export const useShowToast = () => useNumerologyStore((s) => s.showToast);
 export const useClearToast = () => useNumerologyStore((s) => s.clearToast);
 export const useCalculate = () => useNumerologyStore((s) => s.calculate);
+export const useGetUserReports = () => useNumerologyStore((s) => s.getUserReports);
+export const useClearReportCache = () => useNumerologyStore((s) => s.clearReportCache);
 
 export default useNumerologyStore;

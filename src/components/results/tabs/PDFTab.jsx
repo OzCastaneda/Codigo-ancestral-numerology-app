@@ -11,7 +11,7 @@ import useNumerologyStore from '../../../store/useNumerologyStore';
 
 const IS_DEV = import.meta.env.DEV;
 
-export default function PDFTab({ profile, fullName, birthdate }) {
+export default function PDFTab({ profile, fullName, birthdate, sex }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ export default function PDFTab({ profile, fullName, birthdate }) {
     setError(null);
     try {
       const blob = await pdf(
-        <NumerologyReport profile={profile} fullName={fullName} birthdate={birthdate} />
+        <NumerologyReport profile={profile} fullName={fullName} birthdate={birthdate} sex={sex} />
       ).toBlob();
 
       try {

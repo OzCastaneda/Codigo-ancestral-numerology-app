@@ -10,36 +10,45 @@ Layout
 │   │   ├── Hero image (hidden en tablet/mobile)
 │   │   ├── Descripción + Benefits list
 │   │   └── InputForm
-│   ├── ResultsPage (lazy)
+│   ├── ResultsPage (lazy)  ← envuelto en ErrorBoundary
 │   │   └── ResultsTabs (icon-only mobile, full desktop)
-│   │       ├── ResumenTab
-│   │       │   ├── ResultsGrid → NumberCard × 4
-│   │       │   ├── DominantEnergy
-│   │       │   └── QuickInsights
-│   │       ├── InterpretacionesTab
-│   │       │   └── AccordionItem × 4
-│   │       ├── GraficasTab
-│   │       │   ├── EnergyRadarChart
-│   │       │   ├── NumberDonutChart
-│   │       │   └── SpiritualTimeline
-│   │       ├── ArbolTab
-│   │       │   ├── TreeOfLife
-│   │       │   └── KabbalisticSection → KabbalisticCard × 4
-│   │       ├── EnergiasTab
-│   │       │   ├── PlanetsSection
-│   │       │   ├── ArchetypesSection
-│   │       │   ├── PlanetaryColorsSection
-│   │       │   └── AstrologyProfile
-│   │       └── PDFTab
-│   │           └── PDFDownloadButton
+│   │       └── ErrorBoundary key={activeTab}  ← cada tab aislado
+│   │           ├── ResumenTab (lazy)
+│   │           │   ├── ResultsGrid → NumberCard × 4
+│   │           │   ├── DominantEnergy
+│   │           │   └── QuickInsights
+│   │           ├── InterpretacionesTab (lazy)
+│   │           │   └── AccordionItem × 4
+│   │           ├── GraficasTab (lazy)
+│   │           │   ├── EnergyRadarChart
+│   │           │   ├── NumberDonutChart
+│   │           │   └── SpiritualTimeline
+│   │           ├── ArbolTab (lazy)
+│   │           │   ├── TreeOfLife
+│   │           │   └── KabbalisticSection → KabbalisticCard × 4
+│   │           ├── EnergiasTab (lazy)  ← shell 3.5 KB
+│   │           │   └── Suspense + lazy 7 sub-secciones:
+│   │           │       ├── ResumenAstrologico (lazy)
+│   │           │       ├── TuTikunSection (lazy)
+│   │           │       ├── VidaAnteriorSection (lazy)
+│   │           │       ├── TareaEspiritualSection (lazy)
+│   │           │       ├── DesafiosSolucionesSection (lazy)
+│   │           │       ├── LetrasHebreasSection (lazy)
+│   │           │       └── PeriodosAnoSection (lazy)
+│   │           ├── TransitosTab (lazy)
+│   │           ├── EsquemaTab (lazy)
+│   │           ├── HerenciasTab (lazy)
+│   │           └── PDFTab (lazy)  ← @react-pdf
+│   │               └── PDFDownloadButton
 │   ├── LoginPage (lazy)
 │   │   └── LoginForm (React Hook Form + Zod)
 │   ├── RegisterPage (lazy)
-│   │   └── RegisterForm (React Hook Form + Zod)
-│   ├── DashboardPage (lazy, protected)
+│   │   └── RegisterForm (React Hook Form + Zod + zxcvbn)
+│   ├── DashboardPage (lazy, protected)  ← envuelto en ErrorBoundary
 │   │   ├── Profile header
-│   │   ├── Report list (vacío o con cards)
+│   │   ├── Report list (paginado, con caché)
 │   │   └── Logout button
+│   ├── ReportDetailPage (lazy, protected)
 │   ├── AboutPage (lazy)
 │   ├── ContactPage (lazy)
 │   │   └── ContactSection (grid responsive)
@@ -55,12 +64,13 @@ Layout
 
 | Directorio                        | Propósito                                    |
 | --------------------------------- | -------------------------------------------- |
-| `components/layout/`              | Header, AppFooter, Toast, Layout             |
+| `components/layout/`              | Header, AppFooter, Toast, Layout, ErrorBoundary |
 | `components/forms/`               | InputForm (con guardado Supabase)            |
-| `components/charts/`              | EnergyRadarChart, NumberDonutChart, SpiritualTimeline, ChartsDashboard, chartConfig |
+| `components/charts/`              | EnergyRadarChart, NumberDonutChart, SpiritualTimeline |
 | `components/kabbalah/`            | TreeOfLife (Árbol de la Vida SVG)           |
-| `components/results/`             | ResultsTabs y 6 tab components               |
-| `components/results/tabs/`        | ResumenTab, InterpretacionesTab, GraficasTab, ArbolTab, EnergiasTab, PDFTab |
+| `components/results/`             | ResultsTabs y 9 tab components               |
+| `components/results/tabs/`        | ResumenTab, InterpretacionesTab, GraficasTab, ArbolTab, EnergiasTab, TransitosTab, EsquemaTab, HerenciasTab, PDFTab |
+| `components/results/tabs/astrology/` | 7 sub-secciones lazy de Astrología       |
 | `components/contact/`             | ContactSection, ContactButtons, ContactForm, ConsultationCards |
 | `features/numerology/components/` | ResultsGrid, CalculationTabs, InterpretationSection, KabbalisticSection, AstrologyProfile |
 | `features/numerology/engine/`     | Funciones puras de cálculo                   |
@@ -68,13 +78,15 @@ Layout
 | `features/numerology/services/`   | computeFullProfile (agregación de datos)     |
 | `context/`                        | AuthContext (estado de sesión Supabase)      |
 | `hooks/`                          | useAuth (wrapper del contexto)               |
-| `lib/`                            | Cliente Supabase (createClient)              |
+| `lib/`                            | Cliente Supabase (createClient + ensureClient) |
 | `providers/`                      | AppProviders (composición de providers)      |
-| `services/`                       | authService (signUp/signIn/signOut), reportService (CRUD) |
+| `services/`                       | authService, reportService (CRUD + paginación + caché), storageService (PDF dedup) |
 | `pdf/`                            | Sistema de reportes PDF (11 componentes)     |
-| `pages/`                          | Home, Results, Login, Register, Dashboard, About, Contact, 404 |
-| `store/`                          | Zustand store                                |
-| `styles/`                         | tokens.css, global.css, components.css, responsive.css |
+| `pages/`                          | Home, Results, Login, Register, Dashboard, ReportDetail, About, Contact, 404 |
+| `store/`                          | Zustand store con selectores + reportCache   |
+| `utils/`                          | passwordValidator (zxcvbn)                   |
+| `__tests__/`                      | Tests unitarios (Vitest)                     |
+| `styles/`                         | tokens.css, global.css, components.css, passwordStrength.css, responsive.css |
 
 ## Convenciones
 
@@ -82,11 +94,8 @@ Layout
 - Componentes de formulario en `components/forms/`
 - Componentes del dominio de negocio en `features/numerology/components/`
 - Páginas en `pages/<PageName>/<PageName>Page.jsx`
-- Componentes puros memoizados con `memo()` donde hay beneficios de performance
-- Animaciones con `framer-motion` (entradas con `initial`/`animate`/`transition`)
 - Cada tab de resultados es `lazy()` — solo se carga al hacer clic
-- Los componentes PDF usan `@react-pdf/renderer` (estilo `StyleSheet.create`)
-- Los componentes de auth usan React Hook Form + Zod + glassmorphism
-- Todas las páginas usan Tailwind responsive classes (sm/md/lg/xl) con enfoque mobile-first
-- Touch targets mínimos de 44×44px en mobile
-- Cada página auth/página protegida usa lazy loading
+- Sub-secciones de Astrología también son `lazy()` con Suspense
+- Cada tab renderizado está envuelto en `ErrorBoundary` con `key={activeTab}`
+- Componentes de auth usan React Hook Form + Zod + zxcvbn
+- Tests en `__tests__/` con estructura espejo de `src/`

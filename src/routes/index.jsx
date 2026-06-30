@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from '../pages/Home/HomePage';
 import ProtectedRoute from './ProtectedRoute';
+import ErrorBoundary from '../components/layout/ErrorBoundary';
 
 const ResultsPage = lazy(() => import('../pages/Results/ResultsPage'));
 const AboutPage = lazy(() => import('../pages/About/AboutPage'));
@@ -32,7 +33,7 @@ export default function AppRoutes() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <ErrorBoundary><DashboardPage /></ErrorBoundary>
             </ProtectedRoute>
           }
         />

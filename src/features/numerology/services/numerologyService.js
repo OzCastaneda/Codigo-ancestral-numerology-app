@@ -2,7 +2,7 @@ import { calculateAll, getZodiacSignIndex } from '../engine/numerologyEngine';
 import { getLetter, getSephirah, KABBALAH } from '../data/numerologyData';
 import { getInterpretations } from '../data/numerologyInterpretations';
 
-export function computeFullProfile(fullName, birthdate) {
+export function computeFullProfile(fullName, birthdate, sex) {
   const results = calculateAll(fullName, birthdate);
   const zodiacIdx = getZodiacSignIndex(birthdate);
   const sign = KABBALAH.zodiac[zodiacIdx] || null;
@@ -23,5 +23,5 @@ export function computeFullProfile(fullName, birthdate) {
     kabbalistic[key] = getLetter(n);
   });
 
-  return { results, zodiacIdx, sign, interpretations, kabbalistic };
+  return { results, zodiacIdx, sign, interpretations, kabbalistic, sex };
 }

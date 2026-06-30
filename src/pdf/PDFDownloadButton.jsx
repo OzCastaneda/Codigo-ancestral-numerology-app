@@ -7,7 +7,7 @@ import { getReportFileName } from './utils/helpers';
 import { uploadPDF } from '../services/storageService';
 import { ensureClient } from '../lib/supabase';
 
-export default function PDFDownloadButton({ profile, fullName, birthdate }) {
+export default function PDFDownloadButton({ profile, fullName, birthdate, sex }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const fileName = getReportFileName(fullName);
@@ -25,6 +25,7 @@ export default function PDFDownloadButton({ profile, fullName, birthdate }) {
           profile={profile}
           fullName={fullName}
           birthdate={birthdate}
+          sex={sex}
         />
       ).toBlob();
 

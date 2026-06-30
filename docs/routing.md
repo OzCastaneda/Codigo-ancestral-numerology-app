@@ -7,10 +7,11 @@
 | Ruta         | Componente         | Lazy | Protegida | Descripción                           |
 | ------------ | ------------------ | ---- | --------- | ------------------------------------- |
 | `/`          | `HomePage`         | ❌   | ❌        | Hero image + formulario + beneficios  |
-| `/results`   | `ResultsPage`      | ✅   | ❌        | Resultados con sistema de 6 tabs      |
+| `/results`   | `ResultsPage`      | ✅   | ❌        | Resultados con sistema de 9 tabs      |
 | `/login`     | `LoginPage`        | ✅   | ❌        | Inicio de sesión                      |
-| `/register`  | `RegisterPage`     | ✅   | ❌        | Registro de cuenta                    |
+| `/register`  | `RegisterPage`     | ✅   | ❌        | Registro con validación zxcvbn        |
 | `/dashboard` | `DashboardPage`    | ✅   | ✅        | Dashboard con historial de reportes   |
+| `/report/:id`| `ReportDetailPage` | ✅   | ✅        | Detalle de reporte guardado           |
 | `/about`     | `AboutPage`        | ✅   | ❌        | Información del sistema               |
 | `/contact`   | `ContactPage`      | ✅   | ❌        | Contacto + formulario de consulta     |
 | `*`          | `NotFoundPage`     | ✅   | ❌        | Página 404                            |
@@ -24,22 +25,18 @@ const LoginPage = lazy(() => import('../pages/Login/LoginPage'));
 const DashboardPage = lazy(() => import('../pages/Dashboard/DashboardPage'));
 ```
 
-Cada tab dentro de ResultsPage también es lazy:
-
-```jsx
-const ResumenTab = lazy(() => import('./tabs/ResumenTab'));
-```
+Cada tab dentro de ResultsPage también es lazy, y dentro de EnergiasTab hay 7 sub-secciones lazy adicionales.
 
 ## Protección de Rutas
 
-`/dashboard` está envuelta en `ProtectedRoute`:
+`/dashboard` y `/report/:id` están envueltas en `ProtectedRoute`:
 
 ```jsx
 <Route
   path="/dashboard"
   element={
     <ProtectedRoute>
-      <DashboardPage />
+      <ErrorBoundary><DashboardPage /></ErrorBoundary>
     </ProtectedRoute>
   }
 />

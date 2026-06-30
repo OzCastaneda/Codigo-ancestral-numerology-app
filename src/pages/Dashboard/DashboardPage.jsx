@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, User, History, Sparkles, Eye, Trash2, AlertTriangle, X, Loader2 } from 'lucide-react';
+import { LogOut, User, History, Sparkles, Eye, Trash2, AlertTriangle, X, Loader2, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { getUserReports, deleteReport } from '../../services/reportService';
+import { deleteReport } from '../../services/reportService';
+import { useGetUserReports, useClearReportCache } from '../../store/useNumerologyStore';
 
 function ConfirmModal({ open, title, message, onConfirm, onCancel, loading }) {
   return (
@@ -134,23 +135,35 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
   const [reports, setReports] = useState([]);
+  const [totalReports, setTotalReports] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingReports, setLoadingReports] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const getUserReports = useGetUserReports();
+  const clearReportCache = useClearReportCache();
 
-  async function loadReports() {
+  const loadReports = useCallback(async (page, forceRefresh) => {
+    if (!user) return;
+    setLoadingReports(true);
     try {
-      const data = await getUserReports(user.id);
-      setReports(data);
+      if (forceRefresh) clearReportCache();
+      const result = await getUserReports(user.id, page, 10);
+      setReports(result.reports);
+      setTotalReports(result.total);
+      setCurrentPage(result.page);
+      setHasMore(result.hasMore);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingReports(false);
     }
-  }
+  }, [user, getUserReports, clearReportCache]);
 
   useEffect(() => {
-    if (user) {
-      loadReports();
-    }
-  }, [user]);
+    loadReports(1);
+  }, [loadReports]);
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -225,6 +238,28 @@ export default function DashboardPage() {
               <div className="dashboard-card-header">
                 <History size={20} />
                 <h2 className="text-base sm:text-lg">Historial Numerológico</h2>
+                <button
+                  onClick={() => loadReports(1, true)}
+                  disabled={loadingReports}
+                  style={{
+                    marginLeft: 'auto',
+                    background: 'none',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 8,
+                    padding: '6px 12px',
+                    color: '#94A3B8',
+                    cursor: loadingReports ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    fontSize: '0.8rem',
+                    opacity: loadingReports ? 0.5 : 1,
+                  }}
+                  title="Actualizar reportes"
+                >
+                  {loadingReports ? <Loader2 size={14} className="spin" /> : <RefreshCw size={14} />}
+                  {loadingReports ? 'Cargando...' : 'Actualizar'}
+                </button>
               </div>
               {reports.length === 0 ? (
                 <p className="dashboard-card-empty text-sm sm:text-base">
@@ -272,6 +307,30 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+
+              {totalReports > 10 && (
+                <div className="dash-pagination">
+                  <button
+                    onClick={() => loadReports(currentPage - 1)}
+                    disabled={currentPage === 1 || loadingReports}
+                    className="dash-page-btn"
+                  >
+                    <ChevronLeft size={16} />
+                    Anterior
+                  </button>
+                  <span className="dash-page-info">
+                    Página {currentPage} de {Math.ceil(totalReports / 10)}
+                  </span>
+                  <button
+                    onClick={() => loadReports(currentPage + 1)}
+                    disabled={!hasMore || loadingReports}
+                    className="dash-page-btn"
+                  >
+                    Siguiente
+                    <ChevronRight size={16} />
+                  </button>
                 </div>
               )}
             </div>

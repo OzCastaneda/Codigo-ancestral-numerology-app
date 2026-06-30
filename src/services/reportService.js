@@ -31,22 +31,36 @@ export async function saveReport(userId, reportData) {
   return data;
 }
 
-export async function getUserReports(userId) {
+export async function getUserReports(userId, page = 1, pageSize = 10) {
   const client = ensureClient();
-  const { data, error } = await client
+  const offset = (page - 1) * pageSize;
+
+  const countQuery = client
+    .from('numerology_reports')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId);
+
+  const dataQuery = client
     .from('numerology_reports')
     .select('*')
     .eq('user_id', userId)
-    .order('created_at', {
-      ascending: false,
-    });
+    .order('created_at', { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  const [{ count }, { data, error }] = await Promise.all([countQuery, dataQuery]);
 
   if (error) {
     console.error('Error fetching reports:', error);
     throw error;
   }
 
-  return data;
+  return {
+    reports: data,
+    total: count,
+    page,
+    pageSize,
+    hasMore: offset + pageSize < count,
+  };
 }
 
 export async function updateReportPDF(reportId, pdfUrl) {

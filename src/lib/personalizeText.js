@@ -1,0 +1,36 @@
+export function personalizeText(text, sex) {
+  if (!text || sex !== 'femenino') return text;
+
+  return text
+    .replace(/\bdestinados\b/g, 'destinadas')
+    .replace(/\bpioneros\b/g, 'pioneras')
+    .replace(/\binnovadores\b/g, 'innovadoras')
+    .replace(/\bcreadores\b/g, 'creadoras')
+    .replace(/\bmediadores\b/g, 'mediadoras')
+    .replace(/\bpacificadores\b/g, 'pacificadoras')
+    .replace(/\btrabajadores\b/g, 'trabajadoras')
+    .replace(/\bdotados\b/g, 'dotadas')
+    .replace(/\bconsiderados\b/g, 'consideradas')
+    .replace(/\bllamados\b/g, 'llamadas')
+    .replace(/\bpercibidos\b/g, 'percibidas')
+    .replace(/\bconocidos\b/g, 'conocidas')
+    .replace(/\bsabios\b/g, 'sabias')
+    .replace(/\bmismos\b/g, 'mismas')
+    .replace(/\btodos\b/g, 'todas')
+    .replace(/\bellos\b/g, 'ellas')
+    .replace(/\blos que\b/g, 'las que')
+    .replace(/\bunos\b/g, 'unas')
+    .replace(/\bcada uno\b/g, 'cada una')
+    .replace(/\bdel que\b/g, 'de la que')
+    .replace(/\buno mismo\b/g, 'una misma')
+    .replace(/\btranquilos\b/g, 'tranquilas')
+    .replace(/\bprofundos\b/g, 'profundas')
+    .replace(/\búnicos\b/g, 'únicas')
+    .replace(/\bprimeros\b/g, 'primeras')
+    .replace(/\bpropios\b/g, 'propias')
+    .replace(/\btuyos\b/g, 'tuyas')
+    .replace(/\bagresivos\b/g, 'agresivas')
+    .replace(/\bimpulsivos\b/g, 'impulsivas')
+    .replace(/\bexigentes\b/g, 'exigentes')
+    .replace(/\byo mismo\b/g, 'yo misma');
+}

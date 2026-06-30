@@ -4,6 +4,7 @@ import { ArrowLeft, User, Loader2, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useFullName, useBirthdate, useSex, useResults, useCalculate } from '../../store/useNumerologyStore';
 import ResultsTabs from '../../components/results/ResultsTabs';
+import ErrorBoundary from '../../components/layout/ErrorBoundary';
 import { computeFullProfile } from '../../features/numerology/services/numerologyService';
 import { getKabbalisticSign, ZODIAC_COLORS } from '../../data/astrologiaKabalisticaData';
 
@@ -160,11 +161,13 @@ export default function ResultsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <ResultsTabs
-            profile={profile}
-            fullName={fullName}
-            birthdate={birthdate}
-          />
+          <ErrorBoundary>
+            <ResultsTabs
+              profile={profile}
+              fullName={fullName}
+              birthdate={birthdate}
+            />
+          </ErrorBoundary>
         </motion.div>
       </main>
 

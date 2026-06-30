@@ -1,42 +1,69 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: 'Playfair Display', serif;
-  --font-body: 'Lato', sans-serif;
+  /* ---- Typography ---- */
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-serif: 'Crimson Text', 'Georgia', serif;
+  --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
+  /* ---- Deep Base ---- */
   --color-deep-950: #050814;
   --color-deep-900: #070B1A;
   --color-deep-800: #0B1020;
   --color-deep-700: #111827;
   --color-deep-600: #1E293B;
 
+  /* ---- Surfaces ---- */
   --color-surface: rgba(255, 255, 255, 0.04);
   --color-surface-hover: rgba(255, 255, 255, 0.08);
   --color-surface-active: rgba(255, 255, 255, 0.12);
 
+  /* ---- Primary (Purple) ---- */
   --color-primary: #8B5CF6;
   --color-primary-dark: #7C3AED;
   --color-primary-light: #A78BFA;
+  --color-primary-deeper: #6D28D9;
 
+  /* ---- Secondary (Cyan) ---- */
   --color-secondary: #06B6D4;
   --color-secondary-dark: #0891B2;
   --color-secondary-light: #22D3EE;
 
+  /* ---- Accent (Amber) ---- */
   --color-accent: #F59E0B;
   --color-accent-dark: #D97706;
   --color-accent-light: #FBBF24;
 
+  /* ---- Text ---- */
   --color-text-primary: #F1F5F9;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
 
+  /* ---- Borders ---- */
   --color-border-subtle: rgba(255, 255, 255, 0.06);
   --color-border-card: rgba(255, 255, 255, 0.1);
   --color-border-focus: rgba(139, 92, 246, 0.5);
 
+  /* ---- Semantic ---- */
   --color-success: #10B981;
   --color-danger: #EF4444;
   --color-warning: #F59E0B;
+
+  /* ---- Specialty ---- */
+  --color-crimson: #DC143C;
+  --color-crimson-dark: #B01030;
+  --color-crimson-light: #FF1A4A;
+
+  --color-purple-anime: #8B008B;
+  --color-purple-anime-dark: #6A006A;
+  --color-purple-anime-light: #B000B0;
+
+  --color-deep-black: #0F0F0F;
+
+  --color-amber-anime: #FCD34D;
+  --color-amber-anime-dark: #D4A000;
+  --color-amber-anime-light: #FFE08A;
 }
 
 :root {
@@ -54,4 +81,8 @@
   --transition-fast: 0.15s var(--ease);
   --transition: 0.3s var(--ease);
   --transition-slow: 0.5s var(--ease);
+
+  /* Rubric / decorative gold accent */
+  --rubric: #D4A000;
+  --rubric-glow: rgba(212, 160, 0, 0.15);
 }

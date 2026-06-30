@@ -9,6 +9,7 @@ import PDFCard from './components/PDFCard';
 import PDFTextBlock from './components/PDFTextBlock';
 import { formatDate, todayFormatted, getNumberDescription } from './utils/helpers';
 import { registerFonts } from './utils/fonts';
+import { personalizeText } from '../lib/personalizeText';
 
 registerFonts();
 
@@ -139,9 +140,13 @@ function ResultsBlock({ results, fullName, birthdate }) {
   );
 }
 
-function InterpretationBlock({ interpretation, title }) {
+function InterpretationBlock({ interpretation, title, sex }) {
   if (!interpretation) return null;
-  return <PDFInterpretationCard interpretation={interpretation} title={title} />;
+  const personalized = sex === 'femenino' ? {
+    ...interpretation,
+    significado: personalizeText(interpretation.significado, sex),
+  } : interpretation;
+  return <PDFInterpretationCard interpretation={personalized} title={title} />;
 }
 
 function KabbalisticBlock({ results, kabbalistic }) {
@@ -232,7 +237,7 @@ function AstrologyBlock({ zodiac }) {
   );
 }
 
-function buildContentPages({ results, interpretations, kabbalistic, zodiac, fullName, birthdate }) {
+function buildContentPages({ results, interpretations, kabbalistic, zodiac, fullName, birthdate, sex }) {
   const pages = [];
 
   /* ── Page 1: Results ── */
@@ -263,9 +268,9 @@ function buildContentPages({ results, interpretations, kabbalistic, zodiac, full
           title="Interpretación de tus Números"
           subtitle="Significado espiritual, kármico y evolutivo"
         />
-        {group.map(({ key, title }) => {
+          {group.map(({ key, title }) => {
           const interp = interpretations?.[key];
-          return <InterpretationBlock key={key} interpretation={interp} title={title} />;
+          return <InterpretationBlock key={key} interpretation={interp} title={title} sex={sex} />;
         })}
       </PDFPageWrapper>
     );
@@ -287,7 +292,7 @@ function buildContentPages({ results, interpretations, kabbalistic, zodiac, full
   return pages;
 }
 
-export default function NumerologyReport({ profile, fullName, birthdate }) {
+export default function NumerologyReport({ profile, fullName, birthdate, sex }) {
   const generatedDate = todayFormatted();
   const formattedBirthdate = formatDate(birthdate);
 
@@ -295,6 +300,7 @@ export default function NumerologyReport({ profile, fullName, birthdate }) {
   const kabbalistic = profile?.kabbalistic || {};
   const zodiac = profile?.zodiac || null;
   const results = profile?.results || {};
+  const currentSex = sex || profile?.sex || 'masculino';
 
   const contentPages = buildContentPages({
     results,
@@ -303,6 +309,7 @@ export default function NumerologyReport({ profile, fullName, birthdate }) {
     zodiac,
     fullName,
     birthdate,
+    sex: currentSex,
   });
 
   return (

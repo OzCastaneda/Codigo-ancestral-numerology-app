@@ -12,15 +12,22 @@ dist/
 ├── index.html                   (~0.9 kB)
 ├── assets/
 │   ├── imagenes/numerologo.png  (hero image)
-│   ├── index-*.css              (~60 kB)
-│   ├── index-*.js               (~565 kB)  — bundle principal
-│   ├── ResultsPage-*.js         (~65 kB)   — lazy loaded
-│   ├── LoginPage-*.js           (~3.8 kB)  — lazy loaded
-│   ├── RegisterPage-*.js        (~6 kB)    — lazy loaded
-│   ├── DashboardPage-*.js       (~3.8 kB)  — lazy loaded
-│   ├── ContactPage-*.js         (~13 kB)   — lazy loaded
-│   ├── AboutPage-*.js           (~2.3 kB)  — lazy loaded
-│   └── NotFoundPage-*.js        (~1 kB)    — lazy loaded
+│   ├── index-*.css              (~99 kB)
+│   ├── index-*.js               (~575 kB)  — bundle principal
+│   ├── ResultsPage-*.js         (~137 kB)  — lazy loaded
+│   ├── LoginPage-*.js           (~3.8 kB)
+│   ├── RegisterPage-*.js        (~825 kB)  — incluye zxcvbn
+│   ├── DashboardPage-*.js       (~9 kB)
+│   ├── ReportDetailPage-*.js    (~2.4 kB)
+│   ├── ContactPage-*.js         (~13 kB)
+│   ├── AboutPage-*.js           (~2.3 kB)
+│   ├── NotFoundPage-*.js        (~1 kB)
+│   ├── PDFTab-*.js              (~1.5 MB)  — @react-pdf/renderer
+│   ├── GraficasTab-*.js         (~366 kB)  — Recharts
+│   ├── InterpretacionesTab-*.js (~22 kB)
+│   ├── HerenciasTab-*.js        (~17 kB)
+│   ├── tikunCompleteData-*.js   (~35 kB)
+│   └── (astrology sub-sections) (~2-5 kB c/u)
 ```
 
 ## Previsualización Local
@@ -28,6 +35,14 @@ dist/
 ```bash
 npm run preview
 ```
+
+## Tests
+
+```bash
+npm run test
+```
+
+Ejecuta Vitest con jsdom. Los tests de servicios usan mocked Supabase.
 
 ## Opciones de Hosting
 
@@ -75,10 +90,12 @@ VITE_EMAILJS_PUBLIC_KEY=xxx
 
 ## Performance
 
-- **Lazy loading** en rutas secundarias, tabs de resultados, y páginas de auth
+- **Lazy loading** en rutas secundarias, tabs de resultados, sub-secciones de astrología, y páginas de auth
+- **ErrorBoundary** aísla fallos por sección
+- **Caché de reportes** con TTL 5 minutos en el store
+- **PDF deduplicado** con hash SHA-256
+- **Selectores Zustand individuales** evitan re-renders innecesarios
 - **CSS crítico** inline en el HTML
 - **Iconos SVG** con Lucide (sin dependencias de font icons)
 - **Gzip** habilitado por defecto en Vite
-- **PDF con @react-pdf/renderer** cargado solo en PDFTab (lazy)
-- **Recharts** cargado solo en GraficasTab (lazy)
 - **TailwindCSS JIT** genera solo las utilidades usadas

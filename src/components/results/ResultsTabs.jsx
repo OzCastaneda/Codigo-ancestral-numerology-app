@@ -1,6 +1,7 @@
 import { useState, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, BookOpen, BarChart3, TreePine, Globe, FileText, Loader2 } from 'lucide-react';
+import { LayoutDashboard, BookOpen, BarChart3, TreePine, Globe, FileText, Loader2, Heart, Circle, Calendar } from 'lucide-react';
+import ErrorBoundary from '../layout/ErrorBoundary';
 
 const ResumenTab = lazy(() => import('./tabs/ResumenTab'));
 const InterpretacionesTab = lazy(() => import('./tabs/InterpretacionesTab'));
@@ -8,6 +9,9 @@ const GraficasTab = lazy(() => import('./tabs/GraficasTab'));
 const ArbolTab = lazy(() => import('./tabs/ArbolTab'));
 const EnergiasTab = lazy(() => import('./tabs/EnergiasTab'));
 const PDFTab = lazy(() => import('./tabs/PDFTab'));
+const HerenciasTab = lazy(() => import('./tabs/HerenciasTab'));
+const EsquemaTab = lazy(() => import('./tabs/EsquemaTab'));
+const TransitosTab = lazy(() => import('./tabs/TransitosTab'));
 
 const TABS = [
   { id: 'resumen', label: 'Resumen', icon: LayoutDashboard },
@@ -15,6 +19,9 @@ const TABS = [
   { id: 'graficas', label: 'Gráficas', icon: BarChart3 },
   { id: 'arbol', label: 'Árbol Cabalístico', icon: TreePine },
   { id: 'energias', label: 'Astrología Cabalística', icon: Globe },
+  { id: 'transitos', label: 'Ciclos', icon: Calendar },
+  { id: 'esquema', label: 'Esquema', icon: Circle },
+  { id: 'herencias', label: 'Herencias', icon: Heart },
   { id: 'pdf', label: 'PDF', icon: FileText },
 ];
 
@@ -24,6 +31,9 @@ const TAB_COMPONENTS = {
   graficas: GraficasTab,
   arbol: ArbolTab,
   energias: EnergiasTab,
+  transitos: TransitosTab,
+  esquema: EsquemaTab,
+  herencias: HerenciasTab,
   pdf: PDFTab,
 };
 
@@ -44,6 +54,7 @@ function TabFallback() {
 }
 
 export default function ResultsTabs({ profile, fullName, birthdate }) {
+  const sex = profile?.sex;
   const [activeTab, setActiveTab] = useState('resumen');
 
   const handleTabChange = useCallback((id) => {
@@ -91,13 +102,16 @@ export default function ResultsTabs({ profile, fullName, birthdate }) {
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25, ease: 'easeInOut' }}
           >
-            <Suspense fallback={<TabFallback />}>
-              <ActiveComponent
-                profile={profile}
-                fullName={fullName}
-                birthdate={birthdate}
-              />
-            </Suspense>
+            <ErrorBoundary key={activeTab}>
+              <Suspense fallback={<TabFallback />}>
+                <ActiveComponent
+                  profile={profile}
+                  sex={sex}
+                  fullName={fullName}
+                  birthdate={birthdate}
+                />
+              </Suspense>
+            </ErrorBoundary>
           </motion.div>
         </AnimatePresence>
       </div>

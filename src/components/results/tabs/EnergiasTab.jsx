@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Compass, Moon, Target, Shield, BookOpen, Calendar } from 'lucide-react';
+import { LayoutDashboard, Compass, Moon, Target, Shield, BookOpen, Calendar, Loader2 } from 'lucide-react';
 import { getKabbalisticSign, getTikunSign } from '../../../data/astrologiaKabalisticaData';
-import ResumenAstrologico from './astrology/ResumenAstrologico';
-import TuTikunSection from './astrology/TuTikunSection';
-import VidaAnteriorSection from './astrology/VidaAnteriorSection';
-import TareaEspiritualSection from './astrology/TareaEspiritualSection';
-import DesafiosSolucionesSection from './astrology/DesafiosSolucionesSection';
-import LetrasHebreasSection from './astrology/LetrasHebreasSection';
-import PeriodosAnoSection from './astrology/PeriodosAnoSection';
+
+const LAZY_TABS = {
+  resumen: lazy(() => import('./astrology/ResumenAstrologico')),
+  tikun: lazy(() => import('./astrology/TuTikunSection')),
+  'vida-anterior': lazy(() => import('./astrology/VidaAnteriorSection')),
+  'tarea-espiritual': lazy(() => import('./astrology/TareaEspiritualSection')),
+  desafios: lazy(() => import('./astrology/DesafiosSolucionesSection')),
+  letras: lazy(() => import('./astrology/LetrasHebreasSection')),
+  periodos: lazy(() => import('./astrology/PeriodosAnoSection')),
+};
 
 const TABS = [
   { id: 'resumen', label: 'Resumen Astrológico', icon: LayoutDashboard },
@@ -20,31 +23,24 @@ const TABS = [
   { id: 'periodos', label: 'Períodos del Año', icon: Calendar },
 ];
 
+function SectionFallback() {
+  return (
+    <div style={{
+      display: 'flex', justifyContent: 'center', alignItems: 'center',
+      padding: '60px 0', gap: 12, color: 'var(--color-text-muted)',
+    }}>
+      <Loader2 size={22} className="spin" />
+      <span>Cargando sección...</span>
+    </div>
+  );
+}
+
 export default function EnergiasTab({ profile, birthdate }) {
   const userSign = getKabbalisticSign(birthdate);
   const tikunSign = getTikunSign(birthdate);
   const [activeTab, setActiveTab] = useState('resumen');
 
-  const renderSection = () => {
-    switch (activeTab) {
-      case 'resumen':
-        return <ResumenAstrologico userSign={userSign} tikunSign={tikunSign} birthdate={birthdate} />;
-      case 'tikun':
-        return <TuTikunSection tikunSign={tikunSign} userSign={userSign} />;
-      case 'vida-anterior':
-        return <VidaAnteriorSection userSign={userSign} />;
-      case 'tarea-espiritual':
-        return <TareaEspiritualSection tikunSign={tikunSign} />;
-      case 'desafios':
-        return <DesafiosSolucionesSection tikunSign={tikunSign} />;
-      case 'letras':
-        return <LetrasHebreasSection tikunSign={tikunSign} userSign={userSign} />;
-      case 'periodos':
-        return <PeriodosAnoSection tikunSign={tikunSign} userSign={userSign} birthdate={birthdate} />;
-      default:
-        return null;
-    }
-  };
+  const ActiveComponent = LAZY_TABS[activeTab];
 
   return (
     <div className="astro-layout">
@@ -90,21 +86,22 @@ export default function EnergiasTab({ profile, birthdate }) {
 
       {/* Content Area */}
       <div className="astro-content">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25 }}
-          >
-            {tikunSign ? renderSection() : (
-              <div className="astro-empty">
-                <p>No se pudo determinar tu Tikun. Verifica tu fecha de nacimiento.</p>
-              </div>
+        {tikunSign ? (
+          <Suspense fallback={<SectionFallback />}>
+            {ActiveComponent && (
+              <ActiveComponent
+                key={activeTab}
+                userSign={userSign}
+                tikunSign={tikunSign}
+                birthdate={birthdate}
+              />
             )}
-          </motion.div>
-        </AnimatePresence>
+          </Suspense>
+        ) : (
+          <div className="astro-empty">
+            <p>No se pudo determinar tu Tikun. Verifica tu fecha de nacimiento.</p>
+          </div>
+        )}
       </div>
     </div>
   );

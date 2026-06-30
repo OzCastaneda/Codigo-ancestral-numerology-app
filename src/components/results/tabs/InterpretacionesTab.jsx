@@ -1,8 +1,13 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Compass, Heart, User, Star, Sun, Moon, Sparkles, ChevronDown } from 'lucide-react';
+import { Compass, Heart, User, Star, Sun, Moon, Sparkles, ChevronDown, ScrollText, Users } from 'lucide-react';
 import { getInterpretations } from '../../../features/numerology/data/numerologyInterpretations';
 import { getNumberColor } from '../../charts/chartConfig';
+import { personalizeText } from '../../../lib/personalizeText';
+import useHebrewLetters from '../../../hooks/useHebrewLetters';
+import HebrewLetterCard from '../../../features/numerology/components/HebrewLetterCard';
+import useParentalArchetypes from '../../../hooks/useParentalArchetypes';
+import ParentalArchetypeCard from '../../../features/numerology/components/ParentalArchetypeCard';
 
 const CATEGORY_MAP = [
   { key: 'destiny', categoria: 'Destino', title: 'Número de Destino', icon: Compass, desc: 'Tu camino de vida y propósito existencial' },
@@ -11,8 +16,9 @@ const CATEGORY_MAP = [
   { key: 'mission', categoria: 'YoInternoKarmico', title: 'Yo Interno / Kármico', icon: Star, desc: 'Tu propósito esencial y aprendizaje kármico' },
 ];
 
-function AccordionItem({ interpretation, title, icon: Icon, desc, num, defaultOpen }) {
+function AccordionItem({ interpretation, title, icon: Icon, desc, num, defaultOpen, sex }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  const { father, mother } = useParentalArchetypes(num);
 
   const toggle = useCallback(() => setIsOpen(o => !o), []);
 
@@ -104,7 +110,7 @@ function AccordionItem({ interpretation, title, icon: Icon, desc, num, defaultOp
             <div style={{ padding: '0 20px 20px' }}>
               <div className="interpretation-lists" style={{ marginTop: 8 }}>
                 <p className="interpretation-meaning" style={{ color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: 16 }}>
-                  {interpretation.significado}
+                  {personalizeText(interpretation.significado, sex)}
                 </p>
 
                 <div style={{ display: 'grid', gap: 10 }}>
@@ -170,6 +176,18 @@ function AccordionItem({ interpretation, title, icon: Icon, desc, num, defaultOp
                     </p>
                   </div>
                 )}
+
+                {(father || mother) && (
+                  <div className="pa-container">
+                    <h4 className="pa-title">
+                      <Users size={15} /> Arquetipos Parentales — Nº {num}
+                    </h4>
+                    <div className="pa-grid">
+                      {father && <ParentalArchetypeCard archetype={father} index={0} />}
+                      {mother && <ParentalArchetypeCard archetype={mother} index={1} />}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -179,8 +197,16 @@ function AccordionItem({ interpretation, title, icon: Icon, desc, num, defaultOp
   );
 }
 
-export default function InterpretacionesTab({ profile }) {
+const HEBREW_CATEGORIES = [
+  { key: 'destiny', label: 'Destino', colorClass: 'crimson' },
+  { key: 'soul', label: 'Alma', colorClass: 'purple' },
+  { key: 'personality', label: 'Personalidad', colorClass: 'amber' },
+  { key: 'mission', label: 'Misión', colorClass: 'dark' },
+];
+
+export default function InterpretacionesTab({ profile, sex }) {
   const results = profile?.results;
+  const { getLetterByNumber, loading } = useHebrewLetters();
 
   if (!results) return null;
 
@@ -205,11 +231,54 @@ export default function InterpretacionesTab({ profile }) {
               icon={icon}
               desc={desc}
               num={num}
+              sex={sex}
               defaultOpen={i === 0}
             />
           );
         })}
       </div>
+
+      <div className="tab-section-header" style={{ marginTop: 36 }}>
+        <h2 className="tab-section-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <ScrollText size={22} style={{ color: 'var(--color-amber-anime)' }} />
+          Letras Hebreas
+        </h2>
+        <p className="tab-section-desc">
+          Correspondencia de cada número del perfil con su letra hebrea en el Árbol de la Vida.
+        </p>
+      </div>
+
+      {loading ? (
+        <div className="hlc-loading">Cargando letras hebreas...</div>
+      ) : (
+        <div className="hebrew-letters-grid">
+          {HEBREW_CATEGORIES.map(({ key, label, colorClass }) => {
+            const num = results[key];
+            const letter = getLetterByNumber(num);
+            if (!letter) return null;
+            return (
+              <div key={key}>
+                <div style={{
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  color: 'var(--color-text-muted)',
+                  marginBottom: 8,
+                  paddingLeft: 2,
+                }}>
+                  {label} — Nº {num}
+                </div>
+                <HebrewLetterCard
+                  letter={letter}
+                  variant="compact"
+                  colorClass={colorClass}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

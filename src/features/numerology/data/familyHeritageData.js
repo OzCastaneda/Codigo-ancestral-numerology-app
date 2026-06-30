@@ -1,0 +1,145 @@
+const FAMILY_HERITAGE = Object.freeze({
+  1: Object.freeze({
+    psychological_pattern: 'Patrón del Pionero Solitario',
+    family_nucleus: 'Familia donde se valora la independencia y el liderazgo, pero puede haber distancia emocional. Se espera que seas fuerte y autosuficiente desde temprana edad.',
+    gifts: Object.freeze([
+      'Liderazgo innato para guiar a tu familia hacia nuevos rumbos',
+      'Capacidad de romper ciclos transgeneracionales',
+      'Iniciativa para sanar heridas del linaje',
+      'Valentía para ser quien marca la diferencia',
+    ]),
+    liberation_challenge: 'Soltar la creencia de que debes hacerlo todo solo. Permitirte recibir apoyo y reconocer que la vulnerabilidad también es fortaleza.',
+    personal_mission: 'Sanar la herida del "tengo que demostrar que valgo" aprendiendo a liderar desde el corazón, no desde el ego.',
+    family_mission: 'Ser el pionero que transforma los patrones familiares, abriendo camino para las siguientes generaciones con tu ejemplo de autonomía consciente.',
+    social_mission: 'Inspirar a otros a tomar las riendas de su vida, mostrando que el verdadero liderazgo nace de la autenticidad.',
+    fundamental_mission: 'Encarnar la soberanía personal: ser dueño de tu destino sin necesidad de dominar a otros.',
+  }),
+  2: Object.freeze({
+    psychological_pattern: 'Patrón del Mediador Complaciente',
+    family_nucleus: 'Familia donde se evita el conflicto a toda costa. Se valora la armonía superficial pero las emociones verdaderas quedan sin expresar. Puede haber dependencia emocional.',
+    gifts: Object.freeze([
+      'Empatía profunda para comprender las dinámicas familiares',
+      'Talento para mediar y reconciliar tensiones',
+      'Sensibilidad para percibir lo que otros callan',
+      'Capacidad de crear ambientes de paz y colaboración',
+    ]),
+    liberation_challenge: 'Aprender que la paz verdadera nace del conflicto consciente, no de la evasión. Decir lo que sientes aunque incomode.',
+    personal_mission: 'Sanar la dependencia emocional aprendiendo a valorar tu propia voz tanto como la de los demás.',
+    family_mission: 'Restaurar la comunicación auténtica en el sistema familiar, siendo el puente que une sin perderse a sí mismo.',
+    social_mission: 'Enseñar con tu ejemplo que la cooperación genuina nace de individuos completos, no de personas que se anulan.',
+    fundamental_mission: 'Equilibrar el dar y recibir, recordando que cuidar de ti no es egoísmo, es la base del cuidado verdadero.',
+  }),
+  3: Object.freeze({
+    psychological_pattern: 'Patrón del Artista Incomprendido',
+    family_nucleus: 'Familia donde la creatividad y la expresión emocional pueden haber sido reprimidas o juzgadas. Se valora lo práctico sobre lo artístico, generando una sensación de no ser visto.',
+    gifts: Object.freeze([
+      'Creatividad sanadora para transmutar el dolor familiar en arte',
+      'Carisma y comunicación para inspirar cambios',
+      'Alegría que rompe la pesadez de los patrones heredados',
+      'Talento para dar voz a lo que la familia no pudo expresar',
+    ]),
+    liberation_challenge: 'Dejar de buscar la aprobación familiar para tu expresión creativa. Sanar la herida de sentir que no eres suficiente tal como eres.',
+    personal_mission: 'Sanar al niño interior que no fue visto, dándote permiso para brillar sin culpa.',
+    family_mission: 'Ser la voz creativa que libera a tu familia del silencio, expresando lo que generaciones callaron.',
+    social_mission: 'Usar tu don de comunicación para alegrar, inspirar y conectar comunidades enteras.',
+    fundamental_mission: 'Vivir como obra de arte: tu vida es la expresión más pura de tu esencia creativa.',
+  }),
+  4: Object.freeze({
+    psychological_pattern: 'Patrón del Constructor Responsable',
+    family_nucleus: 'Familia estructurada, con énfasis en el deber, el orden y la responsabilidad. Puede haber rigidez o expectativas muy altas sobre el éxito material y la estabilidad.',
+    gifts: Object.freeze([
+      'Disciplina para construir bases sólidas para tu familia',
+      'Capacidad de organización y gestión de recursos',
+      'Lealtad y compromiso inquebrantable',
+      'Sentido práctico para resolver problemas heredados',
+    ]),
+    liberation_challenge: 'Soltar la rigidez y el exceso de control. Aprender que la estabilidad también necesita flexibilidad para ser sostenible.',
+    personal_mission: 'Sanar la creencia de que tu valor depende de tu productividad. Descansar también es construir.',
+    family_mission: 'Establecer bases materiales y emocionales sólidas para las próximas generaciones, sin repetir la rigidez del pasado.',
+    social_mission: 'Construir comunidades organizadas donde el orden sirva a las personas, no al revés.',
+    fundamental_mission: 'Demostrar que la verdadera seguridad nace de la confianza en la vida, no del control absoluto.',
+  }),
+  5: Object.freeze({
+    psychological_pattern: 'Patrón del Nómada Inquieto',
+    family_nucleus: 'Familia donde el cambio fue vivido como amenaza o donde hubo inestabilidad. Puede haber patrones de huida, adicciones o búsqueda constante de estímulos para llenar vacíos.',
+    gifts: Object.freeze([
+      'Adaptabilidad para navegar cualquier cambio',
+      'Versatilidad para encontrar soluciones no convencionales',
+      'Valentía para explorar territorios desconocidos',
+      'Capacidad de liberar a la familia de creencias limitantes',
+    ]),
+    liberation_challenge: 'Dejar de huir de la intimidad y el compromiso. Aprender que la verdadera libertad no es ausencia de ataduras, sino presencia consciente.',
+    personal_mission: 'Sanar la inquietud interior encontrando la libertad en el presente, no en el próximo destino.',
+    family_mission: 'Liberar a tu familia de las creencias limitantes que los mantienen estancados, mostrando el valor del cambio consciente.',
+    social_mission: 'Ser un agente de transformación social, ayudando a otros a atreverse a vivir con más libertad y autenticidad.',
+    fundamental_mission: 'Integrar la aventura con el arraigo: ser libre sin necesidad de huir.',
+  }),
+  6: Object.freeze({
+    psychological_pattern: 'Patrón del Cuidador Sacrificado',
+    family_nucleus: 'Familia donde el amor se expresó a través del sacrificio y el deber. Puede haber codependencia, roles rígidos de cuidado y una tendencia a anteponer las necesidades ajenas a las propias.',
+    gifts: Object.freeze([
+      'Amor incondicional y capacidad de servicio',
+      'Talento para crear hogar y comunidad',
+      'Consejero nato con profunda sabiduría emocional',
+      'Responsabilidad afectiva y lealtad familiar',
+    ]),
+    liberation_challenge: 'Romper el ciclo de sacrificio y codependencia. Aprender que cuidar de ti no es traicionar a otros, sino la condición para amar sin agotarte.',
+    personal_mission: 'Sanar la herida de sentir que amas más de lo que eres amado. Amarte a ti mismo primero.',
+    family_mission: 'Transformar el patrón de cuidado desde el sacrificio hacia el amor consciente que respeta los límites de todos.',
+    social_mission: 'Crear redes de apoyo donde el cuidado sea mutuo y equilibrado, no unidireccional.',
+    fundamental_mission: 'Ser la prueba viviente de que el amor más poderoso es el que sabe decir "yo también importo".',
+  }),
+  7: Object.freeze({
+    psychological_pattern: 'Patrón del Sabio Retraído',
+    family_nucleus: 'Familia donde el conocimiento, la espiritualidad o la reflexión fueron valorados pero quizás de forma distante. Puede haber dificultad para conectar emocionalmente o tendencia al aislamiento.',
+    gifts: Object.freeze([
+      'Sabiduría intuitiva para comprender las dinámicas ocultas',
+      'Capacidad de análisis profundo de los patrones familiares',
+      'Conexión espiritual que trasciende lo material',
+      'Discernimiento para guiar a otros con claridad',
+    ]),
+    liberation_challenge: 'Salir de la torre de marfil. Compartir tu sabiduría con el mundo sin miedo a no ser comprendido.',
+    personal_mission: 'Sanar la herida del aislamiento aprendiendo a confiar en los demás sin perder tu conexión interior.',
+    family_mission: 'Ser el guardián de la sabiduría familiar, honrando la historia sin quedar atrapado en ella.',
+    social_mission: 'Compartir tu conocimiento para guiar a otros en su despertar espiritual y emocional.',
+    fundamental_mission: 'Integrar el cielo y la tierra: ser tan espiritual como humano.',
+  }),
+  8: Object.freeze({
+    psychological_pattern: 'Patrón del Triunfador Exigente',
+    family_nucleus: 'Familia donde el éxito material y el reconocimiento social son primordiales. Puede haber presión por lograr, competencia entre hermanos o ausencia emocional enfocada en lo material.',
+    gifts: Object.freeze([
+      'Capacidad ejecutiva para transformar la realidad material',
+      'Talento para la abundancia y la gestión de recursos',
+      'Liderazgo empresarial y visión estratégica',
+      'Poder de manifestar lo intangible en concreto',
+    ]),
+    liberation_challenge: 'Soltar la creencia de que nunca es suficiente. Sanar la herida de sentir que eres amado por lo que logras, no por lo que eres.',
+    personal_mission: 'Sanar la relación con el dinero y el poder, entendiendo que la abundancia es un derecho, no una recompensa.',
+    family_mission: 'Redefinir el éxito familiar desde el ser, no desde el tener. Sanar la historia de escasez o exceso.',
+    social_mission: 'Usar tu poder y recursos para crear estructuras que beneficien a muchos, siendo un líder al servicio del bien común.',
+    fundamental_mission: 'Demostrar que se puede tener poder sin perder la humildad, y abundancia sin perder el alma.',
+  }),
+  9: Object.freeze({
+    psychological_pattern: 'Patrón del Sanador Compasivo',
+    family_nucleus: 'Familia con heridas profundas que necesitan sanación. Puede haber pérdidas, abandonos o secretos familiares que pesan sobre las generaciones. Se espera que seas quien comprende y perdona.',
+    gifts: Object.freeze([
+      'Compasión profunda para sanar heridas ancestrales',
+      'Sabiduría para soltar con amor lo que ya no sirve',
+      'Capacidad de ver el cuadro completo más allá del drama',
+      'Talento para cerrar ciclos con dignidad y gratitud',
+    ]),
+    liberation_challenge: 'Dejar de cargar el dolor de toda la familia. Sanar la creencia de que tu misión es salvar a todos antes de salvarte a ti.',
+    personal_mission: 'Sanar tus propias heridas de abandono o pérdida para poder acompañar a otros desde la plenitud, no desde la carencia.',
+    family_mission: 'Ser quien cierra los ciclos pendientes de tu linaje, honrando a los ancestros sin cargar sus deudas.',
+    social_mission: 'Crear espacios de sanación colectiva donde el perdón y la compasión sean el camino.',
+    fundamental_mission: 'Recordar que eres un canal de sanación, no el salvador. Tu luz inspira, no rescata.',
+  }),
+});
+
+Object.freeze(FAMILY_HERITAGE);
+
+export function getFamilyHeritageByNumber(num) {
+  return FAMILY_HERITAGE[num] || null;
+}
+
+export default FAMILY_HERITAGE;
